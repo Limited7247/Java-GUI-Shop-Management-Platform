@@ -1,0 +1,104 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package MainPackage.Controllers;
+
+import LibData.Models.Account;
+import LibData.Providers.AccountProvider;
+import MainPackage.Models.Account.LoginViewModel;
+import MainPackage.Views.Account.LoginDialog;
+import static java.lang.System.exit;
+import java.util.List;
+import java.util.Optional;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author Limited
+ */
+public class AccountController {
+
+    private AccountProvider _accountProvider = null;
+
+    public AccountController() {
+        _accountProvider = new AccountProvider();
+    }
+
+    public boolean CheckAccount(Account account) {
+        if (account == null) {
+            return false;
+        }
+
+        if (account.getUsername() == null) {
+            return false;
+        }
+        if (account.getPasswordHash() == null) {
+            return false;
+        }
+
+        return _accountProvider.CheckByUsernameAndPasswordHash(
+                account.getUsername(),
+                account.getPasswordHash());
+    }
+
+    public void Login(Optional<Account> account) {
+        if (account != null) {
+            LoginDialog frmLogin = new LoginDialog(null, true, account);
+            frmLogin.show();
+        }
+
+//        JOptionPane.showMessageDialog(
+//                null,
+//                "Lỗi: Chưa khởi tạo account",
+//                "Lỗi đăng nhập",
+//                JOptionPane.ERROR_MESSAGE);
+    }
+
+    public boolean Login(LoginViewModel model, Optional<Account> account) {
+        System.out.println(model.Username + " " + model.PasswordHash);
+        Account accountTemp = new Account();
+        accountTemp.setUsername(model.Username);
+        accountTemp.setPasswordHash(model.PasswordHash);
+
+        if (CheckAccount(accountTemp)) {
+//            account = Optional.of(accountTemp);
+            account.get().setId(accountTemp.getId());
+            account.get().setUsername(accountTemp.getUsername());
+            account.get().setEmail(accountTemp.getEmail());
+            account.get().setPasswordHash(accountTemp.getPasswordHash());
+            account.get().setCreateTime(accountTemp.getCreateTime());
+            
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Đăng nhập thành công",
+                    "Đăng nhập",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+
+        JOptionPane.showMessageDialog(
+                null,
+                "Đăng nhập thất bại",
+                "Đăng nhập",
+                JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
+
+    public void showAllAccount() {
+        List<Account> list = new AccountProvider().getAll();
+
+        for (Account account : list) {
+            System.out.println(
+                    account.getId()
+                    + " " + account.getUsername()
+                    + " " + account.getPasswordHash()
+                    + " " + account.getEmail()
+                    + " " + account.getCreateTime()
+            );
+        }
+    }
+
+
+}
