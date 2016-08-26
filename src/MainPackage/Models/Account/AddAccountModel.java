@@ -5,6 +5,9 @@
  */
 package MainPackage.Models.Account;
 
+import LibData.Models.Account;
+import LibData.Models.Factories.AccountFactory;
+
 /**
  *
  * @author yang
@@ -14,6 +17,11 @@ public class AddAccountModel {
     public String Username;
     public String PasswordHash;
     public String Email;
+
+    public Account getAccount()
+    {
+        return AccountFactory.createAccount(Username, PasswordHash, Email);
+    }
     
     public AddAccountModel() {
         this.Username = "";

@@ -28,7 +28,8 @@ public class AccountTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 5;
+        ///return 5;
+        return 4; /// Hide Password Column
     }
 
     @Override
@@ -38,11 +39,16 @@ public class AccountTableModel extends AbstractTableModel {
                 return "Mã số";
             case 1:
                 return "Tên tài khoản";
+            /// Hide Password Column
+//            case 2:
+//                return "Mật khẩu";
+//            case 3:
+//                return "Thư điện tử";
+//            case 4:
+//                return "Thời gian tạo";
             case 2:
-                return "Mật khẩu";
-            case 3:
                 return "Thư điện tử";
-            case 4:
+            case 3:
                 return "Thời gian tạo";
             default:
                 return null;
@@ -58,28 +64,32 @@ public class AccountTableModel extends AbstractTableModel {
 
             switch (columnIndex) {
                 case 0:
-                    return 
-                            account.getId() != null 
-                            ? "A-" + account.getId().substring(account.getId().length() - 5) 
+                    return account.getId() != null
+                            ? "A-" + account.getId().substring(account.getId().length() - 5)
                             : "";
                 case 1:
-                    return 
-                            account.getUsername() != null
+                    return account.getUsername() != null
                             ? account.getUsername()
                             : "";
+                /// Hide Password Column
+//                case 2:
+//                    return account.getPasswordHash() != null
+//                            ? account.getPasswordHash()
+//                            : "";
+//                case 3:
+//                    return account.getEmail() != null
+//                            ? account.getEmail()
+//                            : "";
+//                case 4:
+//                    return account.getCreateTime() != null
+//                            ? account.getCreateTime()
+//                            : "";
                 case 2:
-                    return 
-                            account.getPasswordHash() != null
-                            ? account.getPasswordHash()
-                            : "";
-                case 3:
-                    return 
-                            account.getEmail() != null
+                    return account.getEmail() != null
                             ? account.getEmail()
                             : "";
-                case 4:
-                    return 
-                            account.getCreateTime() != null
+                case 3:
+                    return account.getCreateTime() != null
                             ? account.getCreateTime()
                             : "";
                 default:
@@ -91,4 +101,8 @@ public class AccountTableModel extends AbstractTableModel {
         return null;
     }
 
+    public void fireTableDataChanged(List<Account> list) {
+        this.list = list;
+        super.fireTableDataChanged(); //To change body of generated methods, choose Tools | Templates.
+    }
 }

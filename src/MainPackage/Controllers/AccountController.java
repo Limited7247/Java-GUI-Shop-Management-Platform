@@ -5,8 +5,11 @@
  */
 package MainPackage.Controllers;
 
+import LimitedSolution.Classes.StringWrapper;
 import LibData.Models.Account;
+import LibData.Models.Factories.AccountFactory;
 import LibData.Providers.AccountProvider;
+import LimitedSolution.Utilities.SecurityHelper;
 import MainPackage.Models.Account.AddAccountModel;
 import MainPackage.Models.Account.LoginViewModel;
 import MainPackage.Views.Account.LoginDialog;
@@ -28,7 +31,7 @@ public class AccountController {
     public AccountController() {
         _accountProvider = new AccountProvider();
     }
-    
+
     public String MD5(String plaintext) {
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
@@ -48,18 +51,53 @@ public class AccountController {
             return false;
         }
 
-        if (account.getUsername() == null) {
+        if (account.getUsername() == null || account.getUsername().isEmpty()) {
             return false;
         }
-        if (account.getPasswordHash() == null) {
+        if (account.getPasswordHash() == null 
+                || account.getPasswordHash().isEmpty()
+                || account.getPasswordHash().equals(SecurityHelper.MD5EmptyString)) {
             return false;
         }
 
-        return _accountProvider.CheckByUsernameAndPasswordHash(
+        return (_accountProvider.CheckByUsernameAndPasswordHash(
                 account.getUsername(),
-                account.getPasswordHash());
+                account.getPasswordHash()));
     }
-    
+
+    public boolean CheckAccount(Account account, StringWrapper warning) {
+        warning.setString("");
+        boolean key = true;
+
+        if (account == null) {
+            return false;
+        }
+
+        if (account.getUsername() == null || account.getUsername().isEmpty()) {
+            warning.setString("Vui lòng nhập tên tài khoản" + '\n');
+            key = false;
+        }
+        if (account.getPasswordHash() == null 
+                || account.getPasswordHash().isEmpty()
+                || account.getPasswordHash().equals(SecurityHelper.MD5EmptyString)) {
+            warning.appendString("Vui lòng nhập mật khẩu" + '\n');
+            key = false;
+        }
+
+        if (!key) {
+            return key;
+        }
+
+        if (!_accountProvider.CheckByUsernameAndPasswordHash(
+                account.getUsername(),
+                account.getPasswordHash())) {
+            key = false;
+            warning.setString("Tên tài khoản hoặc mật khẩu không đúng");
+        }
+
+        return key;
+    }
+
     public boolean HasUsername(Account account) {
         if (account == null) {
             return false;
@@ -108,35 +146,30 @@ public class AccountController {
 //                "Lỗi đăng nhập",
 //                JOptionPane.ERROR_MESSAGE);
     }
-    
-    public boolean Login(LoginViewModel model, Optional<Account> account) {
-        System.out.println(model.Username + " " + model.PasswordHash);
-        Account accountTemp = new Account();
-        accountTemp.setUsername(model.Username);
-        accountTemp.setPasswordHash(model.PasswordHash);
 
-        if (CheckAccount(accountTemp)) {
-//            account = Optional.of(accountTemp);
-            account.get().setId(accountTemp.getId());
-            account.get().setUsername(accountTemp.getUsername());
-            account.get().setEmail(accountTemp.getEmail());
-            account.get().setPasswordHash(accountTemp.getPasswordHash());
-            account.get().setCreateTime(accountTemp.getCreateTime());
-            
+    public boolean Login(LoginViewModel model, Optional<Account> account) {
+//        System.out.println(model.Username + " " + model.PasswordHash);
+
+        StringWrapper warning = new StringWrapper();
+
+        if (!CheckAccount(model.getAccount(), warning)) {
             JOptionPane.showMessageDialog(
                     null,
-                    "Đăng nhập thành công",
-                    "Đăng nhập",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return true;
+                    warning.getString(),
+                    "Đăng nhập thất bại",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+
         }
+        
+        AccountFactory.transfer(model, account.get());
 
         JOptionPane.showMessageDialog(
                 null,
-                "Đăng nhập thất bại",
+                "Đăng nhập thành công",
                 "Đăng nhập",
-                JOptionPane.WARNING_MESSAGE);
-        return false;
+                JOptionPane.INFORMATION_MESSAGE);
+        return true;
     }
 
     public void showAllAccount() {
@@ -159,7 +192,7 @@ public class AccountController {
         newaccount.setUsername(model.Username);
         newaccount.setPasswordHash(model.PasswordHash);
         newaccount.setEmail(model.Email);
-        
+
         if (HasUsername(newaccount)) {
             if (HasEmail(newaccount)) {
                 if (HasPassword(newaccount)) {
@@ -188,8 +221,10 @@ public class AccountController {
                         JOptionPane.ERROR_MESSAGE);
                 return false;
             }
+
         }
         else {
+
             JOptionPane.showMessageDialog(
                     null,
                     "Đã có tài khoản " + newaccount.getUsername(),
