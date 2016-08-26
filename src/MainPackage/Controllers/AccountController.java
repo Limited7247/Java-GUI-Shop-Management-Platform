@@ -72,6 +72,18 @@ public class AccountController {
         return _accountProvider.CheckByUsername(account.getUsername());
     }
     
+    public boolean HasPassword(Account account) {
+        if (account == null) {
+            return false;
+        }
+
+        if (account.getPasswordHash().equals(MD5(""))) {
+            return false;
+        }
+
+        return true;
+    }
+    
     public boolean HasEmail(Account account) {
         if (account == null) {
             return false;
@@ -150,16 +162,25 @@ public class AccountController {
         
         if (HasUsername(newaccount)) {
             if (HasEmail(newaccount)) {
-                _accountProvider.Insert(newaccount);
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Thêm tài khoản thành công",
-                        "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-                return true;
+                if (HasPassword(newaccount)) {
+                    _accountProvider.Insert(newaccount);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Thêm tài khoản thành công",
+                            "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    return true;
+                }
+                else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Vui lòng nhập mật khẩu",
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
             }
             else {
-                System.out.println(model.Username + " " + model.PasswordHash + " " + model.Email);
                 JOptionPane.showMessageDialog(
                         null,
                         "Đã có email " + newaccount.getEmail(),
@@ -169,7 +190,6 @@ public class AccountController {
             }
         }
         else {
-            System.out.println(model.Username + " " + model.PasswordHash + " " + model.Email);
             JOptionPane.showMessageDialog(
                     null,
                     "Đã có tài khoản " + newaccount.getUsername(),
@@ -179,29 +199,23 @@ public class AccountController {
         }
     }
     
-//    public void DelAccount() {
-//        String id;
-//        
-//        id = "A-A9480";
-//        
-//        Account delaccount = new Account();
-//        delaccount.setId(id);
-//        
-//        if (this._accountProvider.Delete(delaccount))
-//        {
-//            JOptionPane.showMessageDialog(
-//                    null, 
-//                    "Đã xóa tài khoản " + id, 
-//                    "Thông báo", 
-//                    JOptionPane.INFORMATION_MESSAGE);
-//        }
-//        else {
-//            JOptionPane.showMessageDialog(
-//                    null, 
-//                    "Không có tài khoản " + id, 
-//                    "Lỗi", 
-//                    JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
+    public void DelAccount(Account delaccount) {
+       
+        if (this._accountProvider.Delete(delaccount))
+        {
+            JOptionPane.showMessageDialog(
+                    null, 
+                    "Đã xóa tài khoản ", 
+                    "Thông báo", 
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+        else {
+            JOptionPane.showMessageDialog(
+                    null, 
+                    "Không có tài khoản ", 
+                    "Lỗi", 
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 }

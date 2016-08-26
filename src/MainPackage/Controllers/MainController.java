@@ -36,6 +36,7 @@ public class MainController {
 
     public void ShowAccountTable(MainFrame frmMain) {
         frmMain.tableAccount.setModel(new AccountTableModel(_accountProvider.getAll()));
+       
         TableColumnAdjuster(frmMain.tableAccount);
     }
 

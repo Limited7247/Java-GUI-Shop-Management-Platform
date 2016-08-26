@@ -94,7 +94,7 @@ public class AccountProvider {
     
     public boolean Delete(Account account) {
         try {
-            this.jpaAccount.destroy(account.getId());
+            jpaAccount.destroy(account.getId());
             return true;
         } catch (Exception e) {
             System.out.println(e);
