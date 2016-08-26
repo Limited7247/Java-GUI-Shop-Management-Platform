@@ -98,14 +98,12 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
-                        .addGap(15, 15, 15))))
+                        .addComponent(btnDelete)))
+                .addContainerGap(127, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,6 +131,7 @@ public class MainFrame extends javax.swing.JFrame {
         AddAccountDialog frmAddAccount = new AddAccountDialog(this, rootPaneCheckingEnabled);
         frmAddAccount.show();
         //_mainController.;
+        _mainController.UpdateAccountTable(frmMain);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -141,7 +140,8 @@ public class MainFrame extends javax.swing.JFrame {
                 ((AccountTableModel)this.tableAccount.getModel())
                         .list.get(
                                 this.tableAccount.getSelectedRow()));
-        ((AccountTableModel)this.tableAccount.getModel()).list.remove(this.tableAccount.getSelectedRow());
+//        ((AccountTableModel)this.tableAccount.getModel()).list.remove(this.tableAccount.getSelectedRow());
+        _mainController.UpdateAccountTable(frmMain);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**

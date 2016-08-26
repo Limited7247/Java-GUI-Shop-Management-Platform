@@ -33,11 +33,17 @@ public class AccountProvider {
     private JinqJPAStreamProvider streams
             = new JinqJPAStreamProvider(entityManagerFactory); 
 
-    private JPAJinqStream<Account> _accounts = streams.streamAll(em, Account.class);
+//    private JPAJinqStream<Account> _accounts = streams.streamAll(em, Account.class);
+    
+    /// Streams will close after used. Need to reuse it.
+    private JPAJinqStream<Account> getJinqAccounts()
+    {
+        return streams.streamAll(em, Account.class);
+    }
 
     public List<Account> getAll() {
         try {
-            return _accounts.toList();
+            return getJinqAccounts().sortedDescendingBy(m -> m.getCreateTime()).toList();
 
         } catch (Exception ex) {
             System.out.println(ex);
@@ -47,7 +53,7 @@ public class AccountProvider {
 
     public boolean CheckByUsernameAndPasswordHash(String Username, String PasswordHash) {
         try {
-            long counter = _accounts.where(m -> m.getUsername().equals(Username) && m.getPasswordHash().equals(PasswordHash)).count();
+            long counter = getJinqAccounts().where(m -> m.getUsername().equals(Username) && m.getPasswordHash().equals(PasswordHash)).count();
              
             return counter == 1;
 
@@ -59,7 +65,7 @@ public class AccountProvider {
     
     public boolean CheckByUsername(String Username) {
         try {
-            long counter = _accounts.where(m -> m.getUsername().equals(Username)).count();
+            long counter = getJinqAccounts().where(m -> m.getUsername().equals(Username)).count();
              
             return counter == 0;
         } catch (Exception ex) {
@@ -70,7 +76,7 @@ public class AccountProvider {
     
     public boolean CheckByEmail(String Email) {
         try {
-            long counter = _accounts.where(m -> m.getEmail().equals(Email)).count();
+            long counter = getJinqAccounts().where(m -> m.getEmail().equals(Email)).count();
              
             return counter == 0;
         } catch (Exception ex) {
