@@ -137,13 +137,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-        //_accountController.DelAccount();
-        Account account 
-                = ((AccountTableModel) this.tableAccount.getModel())
+        _accountController.DelAccount(
+                ((AccountTableModel)this.tableAccount.getModel())
                         .list.get(
-                                this.tableAccount.getSelectedRow()
-                        );
-        
+                                this.tableAccount.getSelectedRow()));
+        ((AccountTableModel)this.tableAccount.getModel()).list.remove(this.tableAccount.getSelectedRow());
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
