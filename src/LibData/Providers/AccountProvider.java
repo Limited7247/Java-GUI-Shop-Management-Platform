@@ -31,7 +31,7 @@ public class AccountProvider {
     private AccountJpaController jpaAccount = new AccountJpaController(entityManagerFactory);
     
     private JinqJPAStreamProvider streams
-            = new JinqJPAStreamProvider(entityManagerFactory);
+            = new JinqJPAStreamProvider(entityManagerFactory); 
 
     private JPAJinqStream<Account> _accounts = streams.streamAll(em, Account.class);
 

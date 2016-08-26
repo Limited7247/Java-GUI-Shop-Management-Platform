@@ -165,7 +165,11 @@ public class LoginDialog extends javax.swing.JDialog {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
-        LoginViewModel model = new LoginViewModel(txtUsername.getText(), _accountController.MD5(txtPassword.getText()));
+        LoginViewModel model 
+                = new LoginViewModel(
+                        txtUsername.getText(), 
+                        _accountController.MD5(txtPassword.getText()));
+        
         if (_accountController.Login(model, this._account)) {
             this.hide();
         }

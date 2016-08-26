@@ -15,7 +15,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class AccountTableModel extends AbstractTableModel {
 
-    private List<Account> list;
+    public List<Account> list;
 
     public AccountTableModel(List<Account> list) {
         this.list = list;

@@ -5,28 +5,23 @@
  */
 package MainPackage.Models.Account;
 
+import LibData.Models.Account;
+import LibData.Models.Factories.AccountFactory;
+import LimitedSolution.Utilities.SecurityHelper;
+import MainPackage.Models.IModelValidate;
+
 /**
  *
  * @author Limited
  */
-public class LoginViewModel {
+public class LoginViewModel implements IModelValidate {
 
     public String Username;
     public String PasswordHash;
-    
-//    public String MD5(String plaintext) {
-//        try {
-//            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-//            byte[] array = md.digest(plaintext.getBytes());
-//            StringBuffer sb = new StringBuffer();
-//            for (int i = 0; i < array.length; ++i) {
-//                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
-//            }
-//            return sb.toString();
-//        } catch (java.security.NoSuchAlgorithmException e) {
-//        }
-//        return null;
-//    }
+
+    public Account getAccount() {
+        return AccountFactory.createAccount(Username, PasswordHash);
+    }
 
     public LoginViewModel() {
         this.Username = "";
@@ -36,5 +31,40 @@ public class LoginViewModel {
     public LoginViewModel(String Username, String PasswordHash) {
         this.Username = Username;
         this.PasswordHash = PasswordHash;
+    }
+
+    @Override
+    public boolean IsValidate() {
+        if (this.Username == null || this.Username.isEmpty()) {
+            return false;
+        }
+        
+        return !(this.PasswordHash == null
+                || this.PasswordHash.isEmpty()
+                || this.PasswordHash.equals(SecurityHelper.MD5EmptyString));
+    }
+
+    @Override
+    public String MessageValidate() {
+        if (this.IsValidate()) return "OK";
+        
+        String message = "";
+        
+        if (this.Username == null || this.Username.isEmpty()) {
+            message = "Vui lòng nhập tên tài khoản" + '\n';
+        }
+        
+        if (this.PasswordHash == null
+                || this.PasswordHash.isEmpty()
+                || this.PasswordHash.equals(SecurityHelper.MD5EmptyString)) {
+            message += "Vui lòng nhập mật khẩu" + '\n';
+        }
+        
+        return message;
+    }
+
+    @Override
+    public String ToLogString() {
+        return "";
     }
 }
