@@ -5,11 +5,15 @@
  */
 package MainPackage.Controllers;
 
+import LibData.Models.Account;
 import LibData.Providers.AccountProvider;
+import LimitedSolution.Utilities.DateTimeHelper;
 import MainPackage.Models.Account.AccountTableModel;
 import MainPackage.Views.MainFrame;
 import java.awt.Component;
 import static java.lang.System.exit;
+import java.util.Date;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -22,6 +26,20 @@ import javax.swing.table.TableColumn;
 public class MainController {
 
     private AccountProvider _accountProvider = new AccountProvider();
+
+    public void Start() {
+        System.out.println(DateTimeHelper.getCurrentDateString());
+        System.out.println(DateTimeHelper.getCurrentTimeString());
+        System.out.println(DateTimeHelper.getCurrentDateTimeString());
+        
+        System.out.println(DateTimeHelper.getDateString(new Date()));
+        System.out.println(DateTimeHelper.getTimeString(new Date()));
+        System.out.println(DateTimeHelper.getDateTimeString(new Date()));
+        
+        System.out.println(DateTimeHelper.getDateTimeString(new Date(), DateTimeHelper.FORMAT_DATE_DEFAULT));
+        System.out.println(DateTimeHelper.getDateTimeString(new Date(), DateTimeHelper.FORMAT_TIME_DEFAULT));
+        System.out.println(DateTimeHelper.getDateTimeString(new Date(), DateTimeHelper.FORMAT_DATETIME_DEFAULT));
+    }
 
     public void Exit() {
         if (JOptionPane.showConfirmDialog(
@@ -42,7 +60,7 @@ public class MainController {
 
     public void UpdateAccountTable(MainFrame frmMain) {
         ((AccountTableModel) frmMain.tableAccount.getModel()).fireTableDataChanged(_accountProvider.getAll());
-        
+
         TableColumnAdjuster(frmMain.tableAccount);
     }
 

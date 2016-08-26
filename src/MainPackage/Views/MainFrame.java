@@ -174,8 +174,8 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//                _accountController.showAllAccount();
-
+                _mainController.Start();
+                
                 if (_account == null) {
                     _account = Optional.of(new Account());
                 }

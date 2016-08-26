@@ -6,17 +6,21 @@
 package LibData.Models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -52,6 +56,14 @@ public class Account implements Serializable {
     @Column(name = "CreateTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "createBy")
+    private Collection<Orders> ordersCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "createBy")
+    private Collection<OrderLine> orderLineCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy")
+    private Collection<Book> bookCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy")
+    private Collection<Product> productCollection;
 
     public Account() {
     }
@@ -106,6 +118,42 @@ public class Account implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @XmlTransient
+    public Collection<Orders> getOrdersCollection() {
+        return ordersCollection;
+    }
+
+    public void setOrdersCollection(Collection<Orders> ordersCollection) {
+        this.ordersCollection = ordersCollection;
+    }
+
+    @XmlTransient
+    public Collection<OrderLine> getOrderLineCollection() {
+        return orderLineCollection;
+    }
+
+    public void setOrderLineCollection(Collection<OrderLine> orderLineCollection) {
+        this.orderLineCollection = orderLineCollection;
+    }
+
+    @XmlTransient
+    public Collection<Book> getBookCollection() {
+        return bookCollection;
+    }
+
+    public void setBookCollection(Collection<Book> bookCollection) {
+        this.bookCollection = bookCollection;
+    }
+
+    @XmlTransient
+    public Collection<Product> getProductCollection() {
+        return productCollection;
+    }
+
+    public void setProductCollection(Collection<Product> productCollection) {
+        this.productCollection = productCollection;
     }
 
     @Override
