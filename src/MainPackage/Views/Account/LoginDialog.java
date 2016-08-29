@@ -134,7 +134,7 @@ public class LoginDialog extends javax.swing.JDialog {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnLogin)
-                                .addGap(15, 15, 15)
+                                .addGap(10, 10, 10)
                                 .addComponent(btnExit))
                             .addComponent(txtPassword)
                             .addComponent(txtUsername))))

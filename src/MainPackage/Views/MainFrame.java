@@ -11,8 +11,10 @@ import MainPackage.Controllers.AccountController;
 import MainPackage.Controllers.GlobalValues;
 import MainPackage.Controllers.MainController;
 import MainPackage.Models.Account.AccountTableModel;
-import MainPackage.Views.AddAccount.AddAccountDialog;
+import MainPackage.Views.Account.AddAccountDialog;
 import ch.epfl.labos.iu.orm.queryll2.symbolic.TypedValue;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.table.AbstractTableModel;
@@ -37,6 +39,9 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         _account = null;
         _accountController = new AccountController();
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize((int) dim.getWidth(), (int) dim.getHeight());
     }
 
     /**
@@ -72,7 +77,7 @@ public class MainFrame extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tableAccount.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tableAccount.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jScrollPane1.setViewportView(tableAccount);
 
         btnAdd.setText("Thêm");
@@ -96,25 +101,25 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(10, 10, 10)
                         .addComponent(btnDelete)))
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
                     .addComponent(btnDelete))
-                .addContainerGap(128, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();

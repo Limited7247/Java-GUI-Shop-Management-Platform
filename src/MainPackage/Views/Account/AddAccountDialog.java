@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackage.Views.AddAccount;
+package MainPackage.Views.Account;
 
 import LibData.Models.Account;
 import MainPackage.Controllers.AccountController;
@@ -62,7 +62,6 @@ public class AddAccountDialog extends javax.swing.JDialog {
 
         lblUsernam.setText("Tên tài khoản");
 
-        btnCancel.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         btnCancel.setText("Hủy");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,7 +69,6 @@ public class AddAccountDialog extends javax.swing.JDialog {
             }
         });
 
-        btnAdd.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         btnAdd.setText("Thêm");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -87,7 +85,7 @@ public class AddAccountDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
-                        .addGap(15, 15, 15)
+                        .addGap(10, 10, 10)
                         .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

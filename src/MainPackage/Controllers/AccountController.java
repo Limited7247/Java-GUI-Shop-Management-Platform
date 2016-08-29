@@ -13,7 +13,7 @@ import LimitedSolution.Utilities.SecurityHelper;
 import MainPackage.Models.Account.AddAccountModel;
 import MainPackage.Models.Account.LoginViewModel;
 import MainPackage.Views.Account.LoginDialog;
-import MainPackage.Views.AddAccount.AddAccountDialog;
+import MainPackage.Views.Account.AddAccountDialog;
 import static java.lang.System.exit;
 import java.util.List;
 import java.util.Optional;
