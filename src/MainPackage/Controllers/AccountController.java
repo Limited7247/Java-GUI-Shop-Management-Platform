@@ -14,6 +14,7 @@ import MainPackage.Models.Account.AddAccountModel;
 import MainPackage.Models.Account.LoginViewModel;
 import MainPackage.Views.Account.LoginDialog;
 import MainPackage.Views.Account.AddAccountDialog;
+import MainPackage.Views.MainFrame;
 import static java.lang.System.exit;
 import java.util.List;
 import java.util.Optional;
@@ -134,9 +135,9 @@ public class AccountController {
         return _accountProvider.CheckByEmail(account.getEmail());
     }
 
-    public void Login(Optional<Account> account) {
+    public void Login(MainFrame mainFrame, Optional<Account> account) {
         if (account != null) {
-            LoginDialog frmLogin = new LoginDialog(null, true, account);
+            LoginDialog frmLogin = new LoginDialog(mainFrame, true, account);
             frmLogin.show();
         }
 
@@ -164,11 +165,11 @@ public class AccountController {
         
         AccountFactory.transfer(model, account.get());
 
-        JOptionPane.showMessageDialog(
-                null,
-                "Đăng nhập thành công",
-                "Đăng nhập",
-                JOptionPane.INFORMATION_MESSAGE);
+//        JOptionPane.showMessageDialog(
+//                null,
+//                "Đăng nhập thành công",
+//                "Đăng nhập",
+//                JOptionPane.INFORMATION_MESSAGE);
         return true;
     }
 

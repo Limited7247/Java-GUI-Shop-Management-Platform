@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Configs.findAll", query = "SELECT c FROM Configs c"),
-    @NamedQuery(name = "Configs.findByKey", query = "SELECT c FROM Configs c WHERE c.key = :key"),
+    @NamedQuery(name = "Configs.findByIdKey", query = "SELECT c FROM Configs c WHERE c.idKey = :idKey"),
     @NamedQuery(name = "Configs.findByValue", query = "SELECT c FROM Configs c WHERE c.value = :value"),
     @NamedQuery(name = "Configs.findByCreateTime", query = "SELECT c FROM Configs c WHERE c.createTime = :createTime")})
 public class Configs implements Serializable {
@@ -35,8 +35,8 @@ public class Configs implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "Key")
-    private String key;
+    @Column(name = "IdKey")
+    private String idKey;
     @Basic(optional = false)
     @Column(name = "Value")
     private String value;
@@ -48,22 +48,22 @@ public class Configs implements Serializable {
     public Configs() {
     }
 
-    public Configs(String key) {
-        this.key = key;
+    public Configs(String idKey) {
+        this.idKey = idKey;
     }
 
-    public Configs(String key, String value, Date createTime) {
-        this.key = key;
+    public Configs(String idKey, String value, Date createTime) {
+        this.idKey = idKey;
         this.value = value;
         this.createTime = createTime;
     }
 
-    public String getKey() {
-        return key;
+    public String getIdKey() {
+        return idKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setIdKey(String idKey) {
+        this.idKey = idKey;
     }
 
     public String getValue() {
@@ -85,7 +85,7 @@ public class Configs implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (key != null ? key.hashCode() : 0);
+        hash += (idKey != null ? idKey.hashCode() : 0);
         return hash;
     }
 
@@ -96,7 +96,7 @@ public class Configs implements Serializable {
             return false;
         }
         Configs other = (Configs) object;
-        if ((this.key == null && other.key != null) || (this.key != null && !this.key.equals(other.key))) {
+        if ((this.idKey == null && other.idKey != null) || (this.idKey != null && !this.idKey.equals(other.idKey))) {
             return false;
         }
         return true;
@@ -104,7 +104,7 @@ public class Configs implements Serializable {
 
     @Override
     public String toString() {
-        return "LibData.Models.Configs[ key=" + key + " ]";
+        return "LibData.Models.Configs[ idKey=" + idKey + " ]";
     }
     
 }

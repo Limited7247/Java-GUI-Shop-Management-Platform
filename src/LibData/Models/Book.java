@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Book.findByType", query = "SELECT b FROM Book b WHERE b.type = :type"),
     @NamedQuery(name = "Book.findByAuthor", query = "SELECT b FROM Book b WHERE b.author = :author"),
     @NamedQuery(name = "Book.findByPublisher", query = "SELECT b FROM Book b WHERE b.publisher = :publisher"),
-    @NamedQuery(name = "Book.findByYear", query = "SELECT b FROM Book b WHERE b.year = :year"),
+    @NamedQuery(name = "Book.findByPublishYear", query = "SELECT b FROM Book b WHERE b.publishYear = :publishYear"),
+    @NamedQuery(name = "Book.findByPublishMonth", query = "SELECT b FROM Book b WHERE b.publishMonth = :publishMonth"),
     @NamedQuery(name = "Book.findByDetails", query = "SELECT b FROM Book b WHERE b.details = :details"),
     @NamedQuery(name = "Book.findByPrice", query = "SELECT b FROM Book b WHERE b.price = :price"),
     @NamedQuery(name = "Book.findByPicture", query = "SELECT b FROM Book b WHERE b.picture = :picture"),
@@ -72,8 +73,10 @@ public class Book implements Serializable {
     @Column(name = "Publisher")
     private String publisher;
     @Basic(optional = false)
-    @Column(name = "Year")
-    private int year;
+    @Column(name = "PublishYear")
+    private int publishYear;
+    @Column(name = "PublishMonth")
+    private Integer publishMonth;
     @Column(name = "Details")
     private String details;
     @Column(name = "Price")
@@ -103,14 +106,14 @@ public class Book implements Serializable {
         this.id = id;
     }
 
-    public Book(String id, String idCode, String name, String type, String author, String publisher, int year, Date createTime, int status) {
+    public Book(String id, String idCode, String name, String type, String author, String publisher, int publishYear, Date createTime, int status) {
         this.id = id;
         this.idCode = idCode;
         this.name = name;
         this.type = type;
         this.author = author;
         this.publisher = publisher;
-        this.year = year;
+        this.publishYear = publishYear;
         this.createTime = createTime;
         this.status = status;
     }
@@ -171,12 +174,20 @@ public class Book implements Serializable {
         this.publisher = publisher;
     }
 
-    public int getYear() {
-        return year;
+    public int getPublishYear() {
+        return publishYear;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setPublishYear(int publishYear) {
+        this.publishYear = publishYear;
+    }
+
+    public Integer getPublishMonth() {
+        return publishMonth;
+    }
+
+    public void setPublishMonth(Integer publishMonth) {
+        this.publishMonth = publishMonth;
     }
 
     public String getDetails() {

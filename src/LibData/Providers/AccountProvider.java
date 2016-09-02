@@ -51,6 +51,15 @@ public class AccountProvider {
         }
     }
 
+    public Account getById(String Id) {
+        try {
+            return jpaAccount.findAccount(Id);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+    
     public boolean CheckByUsernameAndPasswordHash(String Username, String PasswordHash) {
         try {
             long counter = getJinqAccounts().where(m -> m.getUsername().equals(Username) && m.getPasswordHash().equals(PasswordHash)).count();

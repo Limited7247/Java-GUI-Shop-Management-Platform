@@ -8,6 +8,7 @@ package LibData.Providers;
 import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.IProvider;
 import LibData.JPAControllers.ConfigsJpaController;
 import LibData.Models.Configs;
+import static LibData.Models.Factories.ConfigsFactory.createConfigs;
 import java.util.Date;
 import java.util.List;
 import org.jinq.jpa.JPAJinqStream;
@@ -66,6 +67,24 @@ public class ConfigsProvider implements IProvider {
         }
     }
 
+    public boolean IncreaseValueByKey(String key)
+    {
+        try {
+            Configs config = getByKey(key);
+            if (config == null)
+            {
+                Insert(createConfigs(key, "0"));
+            }
+            
+            long value = Long.parseLong(config.getValue()) + 1;
+            config.setValue(value + "");
+            Update(config);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
     /**
      *
      * @param A Configs object was set key and value
@@ -106,7 +125,7 @@ public class ConfigsProvider implements IProvider {
     @Override
     public boolean Update(Object object) {
         try {
-            Configs config = getJPAConfigs().findConfigs(((Configs) object).getKey());
+            Configs config = getJPAConfigs().findConfigs(((Configs) object).getIdKey());
             config.setValue(((Configs) object).getValue());
             getJPAConfigs().edit(config);
             return true;
