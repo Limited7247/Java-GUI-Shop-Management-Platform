@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 
@@ -35,11 +37,15 @@ public class ProductProvider implements IProvider {
         return streams.streamAll(ProviderHelper.getEntityManager(), Product.class);
     }
 
+    private void showLog(Exception ex) {
+        Logger.getLogger(ProductProvider.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
     public List<Product> getAll() {
         try {
             return getJinqProducts().sortedDescendingBy(m -> m.getCreateTime()).toList();
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return null;
         }
     }
@@ -47,8 +53,8 @@ public class ProductProvider implements IProvider {
     public int count() {
         try {
             return getAll().size();
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return -1;
         }
     }
@@ -61,8 +67,8 @@ public class ProductProvider implements IProvider {
             }
 
             return key + "-" + String.format("%1$06d", Long.parseLong(new ConfigsProvider().getValueByKey(key)));
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return "";
         }
     }
@@ -80,8 +86,8 @@ public class ProductProvider implements IProvider {
 
             getJPAProducts().create(product);
             return true;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return false;
         }
     }
@@ -89,9 +95,10 @@ public class ProductProvider implements IProvider {
     @Override
     public boolean Delete(String id) {
         try {
+            getJPAProducts().destroy(id);
             return true;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return false;
         }
     }
@@ -100,12 +107,18 @@ public class ProductProvider implements IProvider {
     public boolean Update(Object object) {
         try {
             Product product = (Product) object;
-            product.setBookCollection(getById(product.getId()).getBookCollection());
+            Product updateProduct = getById(product.getId());
             
+//            if (product.getStatus() != null) updateProduct.setStatus(product.getStatus());
+            if (product.getName() != null) updateProduct.setName(product.getName());
+            if (product.getType() != null) updateProduct.setType(product.getType());
+            if (product.getPrice() != null) updateProduct.setPrice(product.getPrice());
+            product.setBookCollection(getById(product.getId()).getBookCollection());
+
             getJPAProducts().edit(product);
             return true;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return false;
         }
     }
@@ -113,8 +126,8 @@ public class ProductProvider implements IProvider {
     Product getByIdCode(String idCode) {
         try {
             return getJinqProducts().where(m -> m.getIdCode().equals(idCode)).findOne().get();
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return null;
         }
     }
@@ -122,7 +135,8 @@ public class ProductProvider implements IProvider {
     private Product getById(String id) {
         try {
             return getJPAProducts().findProduct(id);
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            showLog(ex);
             return null;
         }
     }

@@ -42,11 +42,24 @@ public class BookProvider implements IProvider {
 
     private ProductProvider _productProvider = new ProductProvider();
 
+    private void showLog(Exception ex) {
+        Logger.getLogger(BookProvider.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
     public List<Book> getAll() {
         try {
             return getJinqBooks().sortedDescendingBy(m -> m.getCreateTime()).toList();
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
+            return null;
+        }
+    }
+
+    public Book getById(String id) {
+        try {
+            return getJPABooks().findBook(id);
+        } catch (Exception ex) {
+            showLog(ex);
             return null;
         }
     }
@@ -54,8 +67,8 @@ public class BookProvider implements IProvider {
     public int count() {
         try {
             return getAll().size();
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return -1;
         }
     }
@@ -68,8 +81,8 @@ public class BookProvider implements IProvider {
             }
 
             return key + "-" + String.format("%1$06d", Long.parseLong(new ConfigsProvider().getValueByKey(key)));
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return "";
         }
     }
@@ -96,8 +109,8 @@ public class BookProvider implements IProvider {
 
             getJPABooks().create(book);
             return true;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return false;
         }
     }
@@ -105,10 +118,14 @@ public class BookProvider implements IProvider {
     @Override
     public boolean Delete(String id) {
         try {
+            _productProvider.Delete(
+                    _productProvider.getByIdCode(getById(id).getIdCode()).getId()
+            );
             getJPABooks().destroy(id);
+
             return true;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ex) {
+            showLog(ex);
             return false;
         }
     }
@@ -117,22 +134,32 @@ public class BookProvider implements IProvider {
     public boolean Update(Object object) {
         try {
             Book book = (Book) object;
+            
+            Book oldBook = getById(book.getId());
+            Book updateBook = oldBook;
 
-            Product product
-                    = _productProvider.getByIdCode(
-                            getJPABooks().findBook(book.getId()).getIdCode()
-                    );
+            Product product = _productProvider.getByIdCode(oldBook.getIdCode());
             product.setName(book.getName());
             product.setType(book.getType());
             product.setPrice(book.getPrice());
             _productProvider.Update(product);
-
-            book.setProductCollection(book.getProductCollection());
+            updateBook.setProductCollection(oldBook.getProductCollection());
             
-            getJPABooks().edit(book);
+            if (book.getIsbn() != null) updateBook.setIsbn(book.getIsbn());
+            if (book.getName() != null) updateBook.setName(book.getName());
+            if (book.getType() != null) updateBook.setType(book.getType());
+            if (book.getAuthor() != null) updateBook.setAuthor(book.getAuthor());
+            if (book.getPublisher() != null) updateBook.setPublisher(book.getPublisher());
+            if (book.getPublishYear() > 0) updateBook.setPublishYear(book.getPublishYear());
+            if (book.getPublishMonth() != null) updateBook.setPublishMonth(book.getPublishMonth());
+            if (book.getDetails() != null) updateBook.setDetails(book.getDetails());
+            if (book.getPrice() != null) updateBook.setPrice(book.getPrice());
+            if (book.getPicture() != null) updateBook.setPicture(book.getPicture());
+
+            getJPABooks().edit(updateBook);
             return true;
         } catch (Exception ex) {
-            Logger.getLogger(BookProvider.class.getName()).log(Level.SEVERE, null, ex);
+            showLog(ex);
             return false;
         }
     }

@@ -24,7 +24,7 @@ public class UpdateBookModel extends BookViewModel implements IModelValidate {
         if (this.IsValidate()) {
             return BookFactory.createBook(
                     this.Id,
-                    this.ISBN, this.Price,
+                    this.ISBN, CurrencyToInt(this.Price, "VND") + "",
                     this.Name, this.Author,
                     this.Publisher, this.Type,
                     this.PublishYear, this.PublishMonth, this.Details

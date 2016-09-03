@@ -13,6 +13,7 @@ import LibData.Providers.BookProvider;
 import static LimitedSolution.Utilities.JTableHelper.TableColumnAdjuster;
 import MainPackage.Models.Book.AddBookModel;
 import MainPackage.Models.Book.BookTableModel;
+import MainPackage.Models.Book.BookTableModel.BookTableColumnModel;
 import MainPackage.Models.Book.UpdateBookModel;
 import MainPackage.Views.Book.AddBookDialog;
 import MainPackage.Views.Book.BooksFrame;
@@ -36,6 +37,7 @@ public class BookController {
     public void AddBook(BooksFrame booksFrame, Account account) {
         AddBookDialog addBookDialog = new AddBookDialog(booksFrame, true, account);
         addBookDialog.show();
+        ShowBooksTable(booksFrame);
     }
 
     public boolean AddBook(AddBookModel model) {
@@ -79,6 +81,7 @@ public class BookController {
                         account
                 );
         dialog.show();
+        ShowBooksTable(booksFrame);
     }
 
     public boolean UpdateBook(UpdateBookModel model) {
@@ -119,6 +122,7 @@ public class BookController {
                 "Xóa sách",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+
             if (_bookProvider.Delete(book.getId())) {
                 JOptionPane.showMessageDialog(
                         booksFrame,
@@ -137,8 +141,12 @@ public class BookController {
             return false;
 
         }
-        
+
         return true;
+    }
+
+    public void Find(BooksFrame booksFrame, String text) {
+        
     }
 
 }

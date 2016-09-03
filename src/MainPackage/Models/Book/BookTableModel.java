@@ -8,8 +8,13 @@ package MainPackage.Models.Book;
 import LibData.Business.Configs.BookConfigs;
 import LibData.Models.Book;
 import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import LimitedSolution.Utilities.JTableHelper;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -18,6 +23,18 @@ import javax.swing.table.AbstractTableModel;
 public class BookTableModel extends AbstractTableModel {
 
     public List<Book> list;
+
+    public static ArrayList<JTableHelper.Column> columnsList = new ArrayList() {{
+        add(new JTableHelper.Column(0, "STT", 30));
+        add(new JTableHelper.Column(0, "Mã sách", 30));
+        add(new JTableHelper.Column(0, "Mã ISBN", 30));
+        
+        add(new JTableHelper.Column(0, "Tên sách", 30));
+        add(new JTableHelper.Column(0, "Tác giả", 30));
+        add(new JTableHelper.Column(0, "Năm phát hành", 30));
+        add(new JTableHelper.Column(0, "Giá bán", 30));
+        add(new JTableHelper.Column(0, "Tình trạng", 30));
+    }};
 
     public BookTableModel(List<Book> list) {
         this.list = list;
@@ -37,21 +54,14 @@ public class BookTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         switch (column) {
             case 0:
-                return "Stt.";  /// Số thứ tự
             case 1:
-                return "Mã sách";
             case 2:
-                return "Mã ISBN";
             case 3:
-                return "Tên sách";
             case 4:
-                return "Tác giả";
             case 5:
-                return "Năm phát hành";
             case 6:
-                return "Giá bán";
             case 7:
-                return "Tình trạng";
+                return columnsList.get(column).Name;
             default:
                 return "";
         }
@@ -87,4 +97,23 @@ public class BookTableModel extends AbstractTableModel {
         }
     }
 
+    public static class BookTableColumnModel extends DefaultTableColumnModel {
+
+        public BookTableColumnModel() {
+        }
+
+        @Override
+        public TableColumn getColumn(int columnIndex) {
+            TableColumn tableColumn = new TableColumn(columnIndex);
+            tableColumn.setHeaderValue(columnsList.get(columnIndex).Name);
+            tableColumn.setMinWidth(columnsList.get(columnIndex).MinWidth);
+            tableColumn.setMaxWidth(200);
+            return tableColumn;
+        }
+
+        @Override
+        public int getColumnMargin() {
+            return 5; //To change body of generated methods, choose Tools | Templates.
+        }
+    }
 }

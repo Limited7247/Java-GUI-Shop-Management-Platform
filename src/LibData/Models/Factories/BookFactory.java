@@ -19,18 +19,18 @@ public class BookFactory {
     public static Book createBook() {
         Book book = new Book();
 
-        book.setId("");
-        book.setIdCode("");
-        book.setName("");
-        book.setType("");
-        book.setAuthor("");
-        book.setPublisher("");
+        book.setId(null);
+        book.setIdCode(null);
+        book.setName(null);
+        book.setType(null);
+        book.setAuthor(null);
+        book.setPublisher(null);
         book.setPublishYear(0);
-        book.setPublishMonth(0);
-        book.setDetails("");
-        book.setPrice(BigInteger.ZERO);
-        book.setPicture("");
-        book.setCreateTime(new Date());
+        book.setPublishMonth(null);
+        book.setDetails(null);
+        book.setPrice(null);
+        book.setPicture(null);
+        book.setCreateTime(null);
         book.setCreatedBy(null);
         book.setStatus(GlobalConfigs.CONST_UNDEFINED_KEY);
 
@@ -59,14 +59,6 @@ public class BookFactory {
 
         return book;
     }
-
-//    public static Book createBook(String ISBN, String Price, String Name, String Author, String Publisher, String Type, String Year, String Details, String CreatedBy) {
-//        Book book = createBook(ISBN, Price, Name, Author, Publisher, Type, Year, Details);
-//        
-//        book.setCreatedBy(createdBy);
-//        
-//        return book;
-//    }
     
     public static Book createBook(String ISBN, String Price, String Name, String Author, String Publisher, String Type, String Year, String Month, String Details) {
         Book book = createBook(ISBN, Price, Name, Author, Publisher, Type, Year, Details);
