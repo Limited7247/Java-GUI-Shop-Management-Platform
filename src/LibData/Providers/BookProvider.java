@@ -134,7 +134,7 @@ public class BookProvider implements IProvider {
     public boolean Update(Object object) {
         try {
             Book book = (Book) object;
-            
+
             Book oldBook = getById(book.getId());
             Book updateBook = oldBook;
 
@@ -144,17 +144,37 @@ public class BookProvider implements IProvider {
             product.setPrice(book.getPrice());
             _productProvider.Update(product);
             updateBook.setProductCollection(oldBook.getProductCollection());
-            
-            if (book.getIsbn() != null) updateBook.setIsbn(book.getIsbn());
-            if (book.getName() != null) updateBook.setName(book.getName());
-            if (book.getType() != null) updateBook.setType(book.getType());
-            if (book.getAuthor() != null) updateBook.setAuthor(book.getAuthor());
-            if (book.getPublisher() != null) updateBook.setPublisher(book.getPublisher());
-            if (book.getPublishYear() > 0) updateBook.setPublishYear(book.getPublishYear());
-            if (book.getPublishMonth() != null) updateBook.setPublishMonth(book.getPublishMonth());
-            if (book.getDetails() != null) updateBook.setDetails(book.getDetails());
-            if (book.getPrice() != null) updateBook.setPrice(book.getPrice());
-            if (book.getPicture() != null) updateBook.setPicture(book.getPicture());
+
+            if (book.getIsbn() != null) {
+                updateBook.setIsbn(book.getIsbn());
+            }
+            if (book.getName() != null) {
+                updateBook.setName(book.getName());
+            }
+            if (book.getType() != null) {
+                updateBook.setType(book.getType());
+            }
+            if (book.getAuthor() != null) {
+                updateBook.setAuthor(book.getAuthor());
+            }
+            if (book.getPublisher() != null) {
+                updateBook.setPublisher(book.getPublisher());
+            }
+            if (book.getPublishYear() > 0) {
+                updateBook.setPublishYear(book.getPublishYear());
+            }
+            if (book.getPublishMonth() != null) {
+                updateBook.setPublishMonth(book.getPublishMonth());
+            }
+            if (book.getDetails() != null) {
+                updateBook.setDetails(book.getDetails());
+            }
+            if (book.getPrice() != null) {
+                updateBook.setPrice(book.getPrice());
+            }
+            if (book.getPicture() != null) {
+                updateBook.setPicture(book.getPicture());
+            }
 
             getJPABooks().edit(updateBook);
             return true;
@@ -164,4 +184,24 @@ public class BookProvider implements IProvider {
         }
     }
 
+    public List<Book> Find(String findString) {
+        try {
+            if (findString == null || findString.isEmpty()) {
+                return getAll();
+            }
+
+            return getJinqBooks()
+                    .where(
+                            m -> m.getIdCode().contains(findString)
+                            || m.getIsbn().contains(findString)
+                            || m.getName().contains(findString)
+                            || m.getAuthor().contains(findString)
+                            || m.getPublisher().contains(findString)
+                            || m.getType().contains(findString)
+                    )
+                    .toList();
+        } catch (Exception e) {
+            return getAll();
+        }
+    }
 }

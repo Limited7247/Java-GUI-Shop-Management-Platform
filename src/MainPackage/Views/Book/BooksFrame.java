@@ -127,6 +127,11 @@ public class BooksFrame extends javax.swing.JFrame {
                 txtBookSearchActionPerformed(evt);
             }
         });
+        txtBookSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBookSearchKeyTyped(evt);
+            }
+        });
 
         btnAdvanceSearch.setText("Tìm kiếm nâng cao");
 
@@ -553,6 +558,7 @@ public class BooksFrame extends javax.swing.JFrame {
 
     private void btnSimplySearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimplySearchActionPerformed
         // TODO add your handling code here:
+        _bookController.Find(this, txtBookSearch.getText());
     }//GEN-LAST:event_btnSimplySearchActionPerformed
 
     private void btnAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBookActionPerformed
@@ -621,6 +627,16 @@ public class BooksFrame extends javax.swing.JFrame {
 
     private void btnPrintBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintBookActionPerformed
         // TODO add your handling code here:
+        try {
+            _bookController.PrintBook(_booksFrame, getSelectedBook(), _account);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Vui lòng chọn một sách",
+                    "In thông tin sách",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
     }//GEN-LAST:event_btnPrintBookActionPerformed
 
     private void btnPrintBooksListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintBooksListActionPerformed
@@ -631,6 +647,11 @@ public class BooksFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         _bookController.Find(this, txtBookSearch.getText());
     }//GEN-LAST:event_txtBookSearchActionPerformed
+
+    private void txtBookSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBookSearchKeyTyped
+        // TODO add your handling code here:
+//        _bookController.Find(this, txtBookSearch.getText());
+    }//GEN-LAST:event_txtBookSearchKeyTyped
 
     private static void ClearBookInformation() {
         txtIdCode.setText("");
