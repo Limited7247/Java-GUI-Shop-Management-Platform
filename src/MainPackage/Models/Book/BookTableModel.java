@@ -24,21 +24,23 @@ public class BookTableModel extends AbstractTableModel {
 
     public List<Book> list;
 
-    public static ArrayList<JTableHelper.Column> columnsList = new ArrayList() {{
-        add(new JTableHelper.Column(0, "STT", 30));
-        add(new JTableHelper.Column(0, "Mã sách", 30));
-        add(new JTableHelper.Column(0, "Mã ISBN", 30));
-        
-        add(new JTableHelper.Column(0, "Tên sách", 30));
-        add(new JTableHelper.Column(0, "Tác giả", 30));
-        add(new JTableHelper.Column(0, "Năm phát hành", 30));
-        add(new JTableHelper.Column(0, "Giá bán", 30));
-        add(new JTableHelper.Column(0, "Tình trạng", 30));
-    }};
-
     public BookTableModel(List<Book> list) {
         this.list = list;
     }
+
+    public static ArrayList<JTableHelper.Column> columnsList = new ArrayList() {
+        {
+            add(new JTableHelper.Column(0, "STT", 30));
+            add(new JTableHelper.Column(0, "Mã sách", 30));
+            add(new JTableHelper.Column(0, "Mã ISBN", 30));
+
+            add(new JTableHelper.Column(0, "Tên sách", 30));
+            add(new JTableHelper.Column(0, "Tác giả", 30));
+            add(new JTableHelper.Column(0, "Năm phát hành", 30));
+            add(new JTableHelper.Column(0, "Giá bán", 30));
+            add(new JTableHelper.Column(0, "Tình trạng", 30));
+        }
+    };
 
     @Override
     public int getRowCount() {

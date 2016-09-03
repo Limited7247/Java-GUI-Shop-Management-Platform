@@ -8,8 +8,10 @@ package MainPackage.Controllers;
 import LibData.Business.Configs.BookConfigs;
 import LibData.Models.Account;
 import LibData.Models.Book;
+import LibData.Models.Product;
 import LibData.Providers.AccountProvider;
 import LibData.Providers.BookProvider;
+import LibData.Providers.ProductProvider;
 import static LimitedSolution.Utilities.DateTimeHelper.getCurrentDateString;
 import static LimitedSolution.Utilities.DateTimeHelper.getCurrentDateTimeString;
 import static LimitedSolution.Utilities.DateTimeHelper.getCurrentTimeString;
@@ -141,6 +143,7 @@ public class BookController {
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
 
             if (_bookProvider.Delete(book.getId())) {
+
                 JOptionPane.showMessageDialog(
                         booksFrame,
                         "Xóa sách " + book.getName() + " thành công",

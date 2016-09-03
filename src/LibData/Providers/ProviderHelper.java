@@ -29,5 +29,10 @@ public class ProviderHelper {
     public static JinqJPAStreamProvider getJinqStream() {
         return new JinqJPAStreamProvider(getEntityManagerFactory());
     }
+    
+    public static void RefreshDatabase(EntityManager em)
+    {
+        em.getEntityManagerFactory().getCache().evictAll();
+    }
 
 }

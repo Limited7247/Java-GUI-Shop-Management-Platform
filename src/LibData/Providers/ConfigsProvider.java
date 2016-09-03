@@ -9,6 +9,7 @@ import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.IProvider;
 import LibData.JPAControllers.ConfigsJpaController;
 import LibData.Models.Configs;
 import static LibData.Models.Factories.ConfigsFactory.createConfigs;
+import static LibData.Providers.ProviderHelper.RefreshDatabase;
 import java.util.Date;
 import java.util.List;
 import org.jinq.jpa.JPAJinqStream;
@@ -23,7 +24,8 @@ public class ConfigsProvider implements IProvider {
     
     private ConfigsJpaController getJPAConfigs()
     {
-        return new ConfigsJpaController(ProviderHelper.getEntityManagerFactory());
+        RefreshDatabase(jpaConfigs.getEntityManager());
+        return jpaConfigs;
     }
     
     private JPAJinqStream<Configs> getJinqConfigs()

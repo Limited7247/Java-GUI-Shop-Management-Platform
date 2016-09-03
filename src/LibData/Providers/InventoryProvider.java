@@ -28,14 +28,13 @@ public class InventoryProvider implements IProvider {
 
     private InventoryJpaController jpaInventories = new InventoryJpaController(getEntityManagerFactory());
 
-    private JinqJPAStreamProvider streams = new JinqJPAStreamProvider(getEntityManagerFactory());
-
     private InventoryJpaController getJPAInventories() {
-        return new InventoryJpaController(getEntityManagerFactory());
+        RefreshDatabase(jpaInventories.getEntityManager());
+        return jpaInventories;
     }
 
     private JPAJinqStream<Inventory> getJinqInventories() {
-        return streams.streamAll(getEntityManager(), Inventory.class);
+        return getJinqStream().streamAll(getEntityManager(), Inventory.class);
     }
 
     private void showLog(Exception ex) {
@@ -103,7 +102,9 @@ public class InventoryProvider implements IProvider {
 
             if (list != null) {
                 for (Inventory inventory : list) {
-                    Saved(inventory.getId());
+                    if (!inventory.getId().equals(id)) {
+                        Saved(inventory.getId());
+                    }
                 }
             }
 

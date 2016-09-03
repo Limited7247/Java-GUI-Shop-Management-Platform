@@ -7,6 +7,7 @@ package LibData.Providers;
 
 import LibData.JPAControllers.AccountJpaController;
 import LibData.Models.Account;
+import static LibData.Providers.ProviderHelper.*;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -23,22 +24,16 @@ import org.jinq.jpa.JinqJPAStreamProvider;
  */
 public class AccountProvider {
 
-    private EntityManagerFactory entityManagerFactory
-            = Persistence.createEntityManagerFactory("MVCDemoPU");
+    private AccountJpaController jpaAccount = new AccountJpaController(getEntityManagerFactory());
 
-    private EntityManager em = entityManagerFactory.createEntityManager();
+    private AccountJpaController getJPAAccount() {
+        RefreshDatabase(jpaAccount.getEntityManager());
+        return jpaAccount;
+    }
 
-    private AccountJpaController jpaAccount = new AccountJpaController(entityManagerFactory);
-    
-    private JinqJPAStreamProvider streams
-            = new JinqJPAStreamProvider(entityManagerFactory); 
-
-//    private JPAJinqStream<Account> _accounts = streams.streamAll(em, Account.class);
-    
     /// Streams will close after used. Need to reuse it.
-    private JPAJinqStream<Account> getJinqAccounts()
-    {
-        return streams.streamAll(em, Account.class);
+    private JPAJinqStream<Account> getJinqAccounts() {
+        return getJinqStream().streamAll(getEntityManager(), Account.class);
     }
 
     public List<Account> getAll() {
@@ -53,17 +48,20 @@ public class AccountProvider {
 
     public Account getById(String Id) {
         try {
-            return jpaAccount.findAccount(Id);
+            return getJPAAccount().findAccount(Id);
         } catch (Exception e) {
             System.out.println(e);
             return null;
         }
     }
-    
+
     public boolean CheckByUsernameAndPasswordHash(String Username, String PasswordHash) {
         try {
-            long counter = getJinqAccounts().where(m -> m.getUsername().equals(Username) && m.getPasswordHash().equals(PasswordHash)).count();
-             
+            long counter
+                    = getJinqAccounts()
+                            .where(m -> m.getUsername().equals(Username) && m.getPasswordHash().equals(PasswordHash))
+                            .count();
+
             return counter == 1;
 
         } catch (Exception ex) {
@@ -71,45 +69,48 @@ public class AccountProvider {
             return false;
         }
     }
-    
+
     public boolean CheckByUsername(String Username) {
         try {
-            long counter = getJinqAccounts().where(m -> m.getUsername().equals(Username)).count();
-             
+            long counter
+                    = getJinqAccounts()
+                    .where(m -> m.getUsername().equals(Username))
+                    .count();
+
             return counter == 0;
         } catch (Exception ex) {
             System.out.println(ex);
             return true;
         }
     }
-    
+
     public boolean CheckByEmail(String Email) {
         try {
             long counter = getJinqAccounts().where(m -> m.getEmail().equals(Email)).count();
-             
+
             return counter == 0;
         } catch (Exception ex) {
             System.out.println(ex);
             return true;
         }
     }
-    
+
     public boolean Insert(Account account) {
         try {
             account.setId(UUID.randomUUID().toString());
             account.setPasswordHash(account.getPasswordHash());
             account.setCreateTime(new Date());
-            this.jpaAccount.create(account);
+            this.getJPAAccount().create(account);
             return true;
         } catch (Exception e) {
             System.out.println(e);
             return false;
         }
     }
-    
+
     public boolean Delete(Account account) {
         try {
-            jpaAccount.destroy(account.getId());
+            getJPAAccount().destroy(account.getId());
             return true;
         } catch (Exception e) {
             System.out.println(e);

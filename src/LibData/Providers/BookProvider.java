@@ -15,6 +15,7 @@ import LibData.Models.Product;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import LibData.Providers.ProviderHelper;
+import static LibData.Providers.ProviderHelper.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,14 +33,13 @@ public class BookProvider implements IProvider {
 
     private BookJpaController jpaBook = new BookJpaController(ProviderHelper.getEntityManagerFactory());
 
-    private JinqJPAStreamProvider streams = new JinqJPAStreamProvider(ProviderHelper.getEntityManagerFactory());
-
     private BookJpaController getJPABooks() {
-        return new BookJpaController(ProviderHelper.getEntityManagerFactory());
+        RefreshDatabase(jpaBook.getEntityManager());
+        return jpaBook;
     }
 
     private JPAJinqStream<Book> getJinqBooks() {
-        return streams.streamAll(ProviderHelper.getEntityManager(), Book.class);
+        return getJinqStream().streamAll(ProviderHelper.getEntityManager(), Book.class);
     }
 
     private ProductProvider _productProvider = new ProductProvider();
@@ -149,17 +149,14 @@ public class BookProvider implements IProvider {
         try {
             if (!CanBeDeleted(id)) return false;
             
-//            String productId = getById(id).getProductId();
             Product product = getById(id).getProduct();
             
             /// Delete Book
             getJPABooks().destroy(product.getId());
             /// Delete Inventory
-//            new InventoryProvider().DeleteByProductId(product.getId());
-//            /// Delete Product
-////            product.setInventoryCollection(null);
-////            _productProvider.Update(product);
-//            new ProductProvider().Delete(product.getId());
+            new InventoryProvider().DeleteByProductId(product.getId());
+            /// Delete Product
+            new ProductProvider().Delete(product.getId());
 
             return true;
         } catch (Exception ex) {

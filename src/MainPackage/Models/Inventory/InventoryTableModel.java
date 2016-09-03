@@ -1,5 +1,6 @@
 package MainPackage.Models.Inventory;
 
+import LibData.Business.Configs.InventoryConfigs;
 import LibData.Models.Inventory;
 import LibData.Providers.ProductProvider;
 import LimitedSolution.Utilities.JTableHelper;
@@ -23,7 +24,6 @@ import javax.swing.table.TableColumn;
 public class InventoryTableModel extends AbstractTableModel {
 
     public List<Inventory> list;
-    private ProductProvider _productProvider = new ProductProvider();
 
     public InventoryTableModel(List<Inventory> list) {
         this.list = list;
@@ -62,22 +62,22 @@ public class InventoryTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         try {
             Inventory inventory = list.get(rowIndex);
-
+            
             switch (columnIndex) {
                 case 0:
                     return columnIndex + 1;
                 case 1:
                     return inventory.getIdCode();
                 case 2:
-                    return _productProvider.getById(inventory.getId()).getIdCode();
+                    return inventory.getProductId().getIdCode();
                 case 3:
-                    return _productProvider.getById(inventory.getId()).getName();
+                    return inventory.getProductId().getName();
                 case 4:
                     return inventory.getUnit();
                 case 5:
                     return inventory.getQuantity();
                 case 6:
-                    return inventory.getStatus();
+                    return InventoryConfigs.getInventoryStatus(inventory.getStatus());
                 default:
                     return null;
             }
@@ -86,7 +86,13 @@ public class InventoryTableModel extends AbstractTableModel {
         }
     }
 
-    public static class InventoryTableColumnModel extends DefaultTableColumnModel implements ITableColumnModel {
+    public static class InventoryTableColumnModel extends DefaultTableColumnModel {
+        
+        public InventoryTableColumnModel()
+        {
+            
+        }
+        
         @Override
         public TableColumn getColumn(int columnIndex) {
             TableColumn tableColumn = new TableColumn(columnIndex);

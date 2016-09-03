@@ -9,7 +9,8 @@ import LibData.JPAControllers.ProductJpaController;
 import LibData.Models.Book;
 import LibData.Models.Inventory;
 import LibData.Models.Product;
-import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.IProvider;
+import static LibData.Providers.ProviderHelper.*;
+import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -28,20 +29,16 @@ import org.jinq.jpa.JinqJPAStreamProvider;
  */
 public class ProductProvider implements IProvider {
 
-    private EntityManagerFactory getEntityManagerFactory() {
-        return Persistence.createEntityManagerFactory("MVCDemoPU");
-    }
-
     private ProductJpaController jpaProduct = new ProductJpaController(ProviderHelper.getEntityManagerFactory());
 
-    private JinqJPAStreamProvider streams = new JinqJPAStreamProvider(ProviderHelper.getEntityManagerFactory());
 
     private ProductJpaController getJPAProducts() {
-        return new ProductJpaController(getEntityManagerFactory());
+        RefreshDatabase(jpaProduct.getEntityManager());
+        return jpaProduct;
     }
 
     private JPAJinqStream<Product> getJinqProducts() {
-        return streams.streamAll(ProviderHelper.getEntityManager(), Product.class);
+        return getJinqStream().streamAll(ProviderHelper.getEntityManager(), Product.class);
     }
 
     private void showLog(Exception ex) {
@@ -102,9 +99,7 @@ public class ProductProvider implements IProvider {
     @Override
     public boolean Delete(String id) {
         try {
-            Product product = getById(id);
-            product.setInventoryCollection(new ArrayList<Inventory>());
-            getJPAProducts().edit(product);
+            getJPAProducts().getEntityManager().getEntityManagerFactory().getCache().evictAll();
             getJPAProducts().destroy(id);
             return true;
         } catch (Exception ex) {
