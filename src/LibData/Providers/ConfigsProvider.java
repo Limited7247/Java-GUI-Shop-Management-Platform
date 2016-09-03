@@ -23,7 +23,7 @@ public class ConfigsProvider implements IProvider {
     
     private ConfigsJpaController getJPAConfigs()
     {
-        return jpaConfigs;
+        return new ConfigsJpaController(ProviderHelper.getEntityManagerFactory());
     }
     
     private JPAJinqStream<Configs> getJinqConfigs()

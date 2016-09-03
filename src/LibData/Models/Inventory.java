@@ -6,12 +6,15 @@
 package LibData.Models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -19,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,10 +35,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Inventory.findAll", query = "SELECT i FROM Inventory i"),
     @NamedQuery(name = "Inventory.findById", query = "SELECT i FROM Inventory i WHERE i.id = :id"),
     @NamedQuery(name = "Inventory.findByIdCode", query = "SELECT i FROM Inventory i WHERE i.idCode = :idCode"),
+    @NamedQuery(name = "Inventory.findByUnit", query = "SELECT i FROM Inventory i WHERE i.unit = :unit"),
     @NamedQuery(name = "Inventory.findByQuantity", query = "SELECT i FROM Inventory i WHERE i.quantity = :quantity"),
     @NamedQuery(name = "Inventory.findByCreateTime", query = "SELECT i FROM Inventory i WHERE i.createTime = :createTime"),
-    @NamedQuery(name = "Inventory.findByCreateBy", query = "SELECT i FROM Inventory i WHERE i.createBy = :createBy"),
-    @NamedQuery(name = "Inventory.findByStatus", query = "SELECT i FROM Inventory i WHERE i.status = :status")})
+    @NamedQuery(name = "Inventory.findByStatus", query = "SELECT i FROM Inventory i WHERE i.status = :status"),
+    @NamedQuery(name = "Inventory.findByType", query = "SELECT i FROM Inventory i WHERE i.type = :type")})
 public class Inventory implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,6 +51,9 @@ public class Inventory implements Serializable {
     @Column(name = "IdCode")
     private String idCode;
     @Basic(optional = false)
+    @Column(name = "Unit")
+    private String unit;
+    @Basic(optional = false)
     @Column(name = "Quantity")
     private int quantity;
     @Basic(optional = false)
@@ -53,11 +61,19 @@ public class Inventory implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
     @Basic(optional = false)
-    @Column(name = "CreateBy")
-    private String createBy;
-    @Basic(optional = false)
     @Column(name = "Status")
     private int status;
+    @Basic(optional = false)
+    @Column(name = "Type")
+    private int type;
+    @JoinTable(name = "OrderLineInventoryLine", joinColumns = {
+        @JoinColumn(name = "InventoryId", referencedColumnName = "Id")}, inverseJoinColumns = {
+        @JoinColumn(name = "OrderLineId", referencedColumnName = "Id")})
+    @ManyToMany
+    private Collection<OrderLine> orderLineCollection;
+    @JoinColumn(name = "CreateBy", referencedColumnName = "Id")
+    @ManyToOne(optional = false)
+    private Account createBy;
     @JoinColumn(name = "ProductId", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Product productId;
@@ -69,13 +85,14 @@ public class Inventory implements Serializable {
         this.id = id;
     }
 
-    public Inventory(String id, String idCode, int quantity, Date createTime, String createBy, int status) {
+    public Inventory(String id, String idCode, String unit, int quantity, Date createTime, int status, int type) {
         this.id = id;
         this.idCode = idCode;
+        this.unit = unit;
         this.quantity = quantity;
         this.createTime = createTime;
-        this.createBy = createBy;
         this.status = status;
+        this.type = type;
     }
 
     public String getId() {
@@ -94,6 +111,14 @@ public class Inventory implements Serializable {
         this.idCode = idCode;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -110,20 +135,37 @@ public class Inventory implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
     public int getStatus() {
         return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    @XmlTransient
+    public Collection<OrderLine> getOrderLineCollection() {
+        return orderLineCollection;
+    }
+
+    public void setOrderLineCollection(Collection<OrderLine> orderLineCollection) {
+        this.orderLineCollection = orderLineCollection;
+    }
+
+    public Account getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(Account createBy) {
+        this.createBy = createBy;
     }
 
     public Product getProductId() {

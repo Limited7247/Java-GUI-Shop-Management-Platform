@@ -64,6 +64,8 @@ public class Account implements Serializable {
     private Collection<Book> bookCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy")
     private Collection<Product> productCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "createBy")
+    private Collection<Inventory> inventoryCollection;
 
     public Account() {
     }
@@ -154,6 +156,15 @@ public class Account implements Serializable {
 
     public void setProductCollection(Collection<Product> productCollection) {
         this.productCollection = productCollection;
+    }
+
+    @XmlTransient
+    public Collection<Inventory> getInventoryCollection() {
+        return inventoryCollection;
+    }
+
+    public void setInventoryCollection(Collection<Inventory> inventoryCollection) {
+        this.inventoryCollection = inventoryCollection;
     }
 
     @Override

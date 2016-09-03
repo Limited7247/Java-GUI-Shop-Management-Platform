@@ -20,6 +20,7 @@ import java.util.Collection;
 import LibData.Models.OrderLine;
 import LibData.Models.Book;
 import LibData.Models.Product;
+import LibData.Models.Inventory;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -52,6 +53,9 @@ public class AccountJpaController implements Serializable {
         if (account.getProductCollection() == null) {
             account.setProductCollection(new ArrayList<Product>());
         }
+        if (account.getInventoryCollection() == null) {
+            account.setInventoryCollection(new ArrayList<Inventory>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -70,7 +74,7 @@ public class AccountJpaController implements Serializable {
             account.setOrderLineCollection(attachedOrderLineCollection);
             Collection<Book> attachedBookCollection = new ArrayList<Book>();
             for (Book bookCollectionBookToAttach : account.getBookCollection()) {
-                bookCollectionBookToAttach = em.getReference(bookCollectionBookToAttach.getClass(), bookCollectionBookToAttach.getId());
+                bookCollectionBookToAttach = em.getReference(bookCollectionBookToAttach.getClass(), bookCollectionBookToAttach.getProductId());
                 attachedBookCollection.add(bookCollectionBookToAttach);
             }
             account.setBookCollection(attachedBookCollection);
@@ -80,6 +84,12 @@ public class AccountJpaController implements Serializable {
                 attachedProductCollection.add(productCollectionProductToAttach);
             }
             account.setProductCollection(attachedProductCollection);
+            Collection<Inventory> attachedInventoryCollection = new ArrayList<Inventory>();
+            for (Inventory inventoryCollectionInventoryToAttach : account.getInventoryCollection()) {
+                inventoryCollectionInventoryToAttach = em.getReference(inventoryCollectionInventoryToAttach.getClass(), inventoryCollectionInventoryToAttach.getId());
+                attachedInventoryCollection.add(inventoryCollectionInventoryToAttach);
+            }
+            account.setInventoryCollection(attachedInventoryCollection);
             em.persist(account);
             for (Orders ordersCollectionOrders : account.getOrdersCollection()) {
                 Account oldCreateByOfOrdersCollectionOrders = ordersCollectionOrders.getCreateBy();
@@ -117,6 +127,15 @@ public class AccountJpaController implements Serializable {
                     oldCreatedByOfProductCollectionProduct = em.merge(oldCreatedByOfProductCollectionProduct);
                 }
             }
+            for (Inventory inventoryCollectionInventory : account.getInventoryCollection()) {
+                Account oldCreateByOfInventoryCollectionInventory = inventoryCollectionInventory.getCreateBy();
+                inventoryCollectionInventory.setCreateBy(account);
+                inventoryCollectionInventory = em.merge(inventoryCollectionInventory);
+                if (oldCreateByOfInventoryCollectionInventory != null) {
+                    oldCreateByOfInventoryCollectionInventory.getInventoryCollection().remove(inventoryCollectionInventory);
+                    oldCreateByOfInventoryCollectionInventory = em.merge(oldCreateByOfInventoryCollectionInventory);
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findAccount(account.getId()) != null) {
@@ -144,6 +163,8 @@ public class AccountJpaController implements Serializable {
             Collection<Book> bookCollectionNew = account.getBookCollection();
             Collection<Product> productCollectionOld = persistentAccount.getProductCollection();
             Collection<Product> productCollectionNew = account.getProductCollection();
+            Collection<Inventory> inventoryCollectionOld = persistentAccount.getInventoryCollection();
+            Collection<Inventory> inventoryCollectionNew = account.getInventoryCollection();
             List<String> illegalOrphanMessages = null;
             for (Orders ordersCollectionOldOrders : ordersCollectionOld) {
                 if (!ordersCollectionNew.contains(ordersCollectionOldOrders)) {
@@ -177,6 +198,14 @@ public class AccountJpaController implements Serializable {
                     illegalOrphanMessages.add("You must retain Product " + productCollectionOldProduct + " since its createdBy field is not nullable.");
                 }
             }
+            for (Inventory inventoryCollectionOldInventory : inventoryCollectionOld) {
+                if (!inventoryCollectionNew.contains(inventoryCollectionOldInventory)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Inventory " + inventoryCollectionOldInventory + " since its createBy field is not nullable.");
+                }
+            }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
@@ -196,7 +225,7 @@ public class AccountJpaController implements Serializable {
             account.setOrderLineCollection(orderLineCollectionNew);
             Collection<Book> attachedBookCollectionNew = new ArrayList<Book>();
             for (Book bookCollectionNewBookToAttach : bookCollectionNew) {
-                bookCollectionNewBookToAttach = em.getReference(bookCollectionNewBookToAttach.getClass(), bookCollectionNewBookToAttach.getId());
+                bookCollectionNewBookToAttach = em.getReference(bookCollectionNewBookToAttach.getClass(), bookCollectionNewBookToAttach.getProductId());
                 attachedBookCollectionNew.add(bookCollectionNewBookToAttach);
             }
             bookCollectionNew = attachedBookCollectionNew;
@@ -208,6 +237,13 @@ public class AccountJpaController implements Serializable {
             }
             productCollectionNew = attachedProductCollectionNew;
             account.setProductCollection(productCollectionNew);
+            Collection<Inventory> attachedInventoryCollectionNew = new ArrayList<Inventory>();
+            for (Inventory inventoryCollectionNewInventoryToAttach : inventoryCollectionNew) {
+                inventoryCollectionNewInventoryToAttach = em.getReference(inventoryCollectionNewInventoryToAttach.getClass(), inventoryCollectionNewInventoryToAttach.getId());
+                attachedInventoryCollectionNew.add(inventoryCollectionNewInventoryToAttach);
+            }
+            inventoryCollectionNew = attachedInventoryCollectionNew;
+            account.setInventoryCollection(inventoryCollectionNew);
             account = em.merge(account);
             for (Orders ordersCollectionNewOrders : ordersCollectionNew) {
                 if (!ordersCollectionOld.contains(ordersCollectionNewOrders)) {
@@ -250,6 +286,17 @@ public class AccountJpaController implements Serializable {
                     if (oldCreatedByOfProductCollectionNewProduct != null && !oldCreatedByOfProductCollectionNewProduct.equals(account)) {
                         oldCreatedByOfProductCollectionNewProduct.getProductCollection().remove(productCollectionNewProduct);
                         oldCreatedByOfProductCollectionNewProduct = em.merge(oldCreatedByOfProductCollectionNewProduct);
+                    }
+                }
+            }
+            for (Inventory inventoryCollectionNewInventory : inventoryCollectionNew) {
+                if (!inventoryCollectionOld.contains(inventoryCollectionNewInventory)) {
+                    Account oldCreateByOfInventoryCollectionNewInventory = inventoryCollectionNewInventory.getCreateBy();
+                    inventoryCollectionNewInventory.setCreateBy(account);
+                    inventoryCollectionNewInventory = em.merge(inventoryCollectionNewInventory);
+                    if (oldCreateByOfInventoryCollectionNewInventory != null && !oldCreateByOfInventoryCollectionNewInventory.equals(account)) {
+                        oldCreateByOfInventoryCollectionNewInventory.getInventoryCollection().remove(inventoryCollectionNewInventory);
+                        oldCreateByOfInventoryCollectionNewInventory = em.merge(oldCreateByOfInventoryCollectionNewInventory);
                     }
                 }
             }
@@ -310,6 +357,13 @@ public class AccountJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This Account (" + account + ") cannot be destroyed since the Product " + productCollectionOrphanCheckProduct + " in its productCollection field has a non-nullable createdBy field.");
+            }
+            Collection<Inventory> inventoryCollectionOrphanCheck = account.getInventoryCollection();
+            for (Inventory inventoryCollectionOrphanCheckInventory : inventoryCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Account (" + account + ") cannot be destroyed since the Inventory " + inventoryCollectionOrphanCheckInventory + " in its inventoryCollection field has a non-nullable createBy field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

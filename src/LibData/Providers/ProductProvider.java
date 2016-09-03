@@ -7,6 +7,7 @@ package LibData.Providers;
 
 import LibData.JPAControllers.ProductJpaController;
 import LibData.Models.Book;
+import LibData.Models.Inventory;
 import LibData.Models.Product;
 import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.IProvider;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 
@@ -25,12 +28,16 @@ import org.jinq.jpa.JinqJPAStreamProvider;
  */
 public class ProductProvider implements IProvider {
 
+    private EntityManagerFactory getEntityManagerFactory() {
+        return Persistence.createEntityManagerFactory("MVCDemoPU");
+    }
+
     private ProductJpaController jpaProduct = new ProductJpaController(ProviderHelper.getEntityManagerFactory());
 
     private JinqJPAStreamProvider streams = new JinqJPAStreamProvider(ProviderHelper.getEntityManagerFactory());
 
     private ProductJpaController getJPAProducts() {
-        return jpaProduct;
+        return new ProductJpaController(getEntityManagerFactory());
     }
 
     private JPAJinqStream<Product> getJinqProducts() {
@@ -95,6 +102,9 @@ public class ProductProvider implements IProvider {
     @Override
     public boolean Delete(String id) {
         try {
+            Product product = getById(id);
+            product.setInventoryCollection(new ArrayList<Inventory>());
+            getJPAProducts().edit(product);
             getJPAProducts().destroy(id);
             return true;
         } catch (Exception ex) {
@@ -108,14 +118,21 @@ public class ProductProvider implements IProvider {
         try {
             Product product = (Product) object;
             Product updateProduct = getById(product.getId());
-            
-//            if (product.getStatus() != null) updateProduct.setStatus(product.getStatus());
-            if (product.getName() != null) updateProduct.setName(product.getName());
-            if (product.getType() != null) updateProduct.setType(product.getType());
-            if (product.getPrice() != null) updateProduct.setPrice(product.getPrice());
-            product.setBookCollection(getById(product.getId()).getBookCollection());
 
-            getJPAProducts().edit(product);
+//            if (product.getStatus() != null) updateProduct.setStatus(product.getStatus());
+            if (product.getName() != null) {
+                updateProduct.setName(product.getName());
+            }
+            if (product.getType() != null) {
+                updateProduct.setType(product.getType());
+            }
+            if (product.getPrice() != null) {
+                updateProduct.setPrice(product.getPrice());
+            }
+//            product.setBook(getById(product.getId()).getBook());
+//            product.setInventoryCollection(product.getInventoryCollection());
+            
+            getJPAProducts().edit(updateProduct);
             return true;
         } catch (Exception ex) {
             showLog(ex);
@@ -132,7 +149,7 @@ public class ProductProvider implements IProvider {
         }
     }
 
-    private Product getById(String id) {
+    public Product getById(String id) {
         try {
             return getJPAProducts().findProduct(id);
         } catch (Exception ex) {

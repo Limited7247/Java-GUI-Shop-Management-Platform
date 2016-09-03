@@ -84,7 +84,7 @@ public class UpdateBookModel extends BookViewModel implements IModelValidate {
 
     }
 
-    public UpdateBookModel(String Id, 
+    public UpdateBookModel(String Id,
             String ISBN, String Price,
             String Name, String Author,
             String Publisher, String Type,

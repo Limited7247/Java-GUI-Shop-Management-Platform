@@ -7,23 +7,20 @@ package LibData.Models;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -35,6 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Book.findAll", query = "SELECT b FROM Book b"),
     @NamedQuery(name = "Book.findById", query = "SELECT b FROM Book b WHERE b.id = :id"),
+    @NamedQuery(name = "Book.findByProductId", query = "SELECT b FROM Book b WHERE b.productId = :productId"),
     @NamedQuery(name = "Book.findByIdCode", query = "SELECT b FROM Book b WHERE b.idCode = :idCode"),
     @NamedQuery(name = "Book.findByIsbn", query = "SELECT b FROM Book b WHERE b.isbn = :isbn"),
     @NamedQuery(name = "Book.findByName", query = "SELECT b FROM Book b WHERE b.name = :name"),
@@ -51,10 +49,13 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
     @Basic(optional = false)
     @Column(name = "Id")
     private String id;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "ProductId")
+    private String productId;
     @Basic(optional = false)
     @Column(name = "IdCode")
     private String idCode;
@@ -90,23 +91,22 @@ public class Book implements Serializable {
     @Basic(optional = false)
     @Column(name = "Status")
     private int status;
-    @JoinTable(name = "ProductBookLine", joinColumns = {
-        @JoinColumn(name = "BookId", referencedColumnName = "Id")}, inverseJoinColumns = {
-        @JoinColumn(name = "ProductId", referencedColumnName = "Id")})
-    @ManyToMany
-    private Collection<Product> productCollection;
     @JoinColumn(name = "CreatedBy", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Account createdBy;
+    @JoinColumn(name = "ProductId", referencedColumnName = "Id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private Product product;
 
     public Book() {
     }
 
-    public Book(String id) {
-        this.id = id;
+    public Book(String productId) {
+        this.productId = productId;
     }
 
-    public Book(String id, String idCode, String name, String type, String author, String publisher, int publishYear, Date createTime, int status) {
+    public Book(String productId, String id, String idCode, String name, String type, String author, String publisher, int publishYear, Date createTime, int status) {
+        this.productId = productId;
         this.id = id;
         this.idCode = idCode;
         this.name = name;
@@ -124,6 +124,14 @@ public class Book implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public String getIdCode() {
@@ -230,15 +238,6 @@ public class Book implements Serializable {
         this.status = status;
     }
 
-    @XmlTransient
-    public Collection<Product> getProductCollection() {
-        return productCollection;
-    }
-
-    public void setProductCollection(Collection<Product> productCollection) {
-        this.productCollection = productCollection;
-    }
-
     public Account getCreatedBy() {
         return createdBy;
     }
@@ -247,10 +246,18 @@ public class Book implements Serializable {
         this.createdBy = createdBy;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (productId != null ? productId.hashCode() : 0);
         return hash;
     }
 
@@ -261,7 +268,7 @@ public class Book implements Serializable {
             return false;
         }
         Book other = (Book) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.productId == null && other.productId != null) || (this.productId != null && !this.productId.equals(other.productId))) {
             return false;
         }
         return true;
@@ -269,7 +276,7 @@ public class Book implements Serializable {
 
     @Override
     public String toString() {
-        return "LibData.Models.Book[ id=" + id + " ]";
+        return "LibData.Models.Book[ productId=" + productId + " ]";
     }
     
 }

@@ -7,13 +7,17 @@ package LibData.JPAControllers;
 
 import LibData.JPAControllers.exceptions.NonexistentEntityException;
 import LibData.JPAControllers.exceptions.PreexistingEntityException;
-import LibData.Models.Inventory;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import LibData.Models.Account;
+import LibData.Models.Inventory;
 import LibData.Models.Product;
+import LibData.Models.OrderLine;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,19 +38,41 @@ public class InventoryJpaController implements Serializable {
     }
 
     public void create(Inventory inventory) throws PreexistingEntityException, Exception {
+        if (inventory.getOrderLineCollection() == null) {
+            inventory.setOrderLineCollection(new ArrayList<OrderLine>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Account createBy = inventory.getCreateBy();
+            if (createBy != null) {
+                createBy = em.getReference(createBy.getClass(), createBy.getId());
+                inventory.setCreateBy(createBy);
+            }
             Product productId = inventory.getProductId();
             if (productId != null) {
                 productId = em.getReference(productId.getClass(), productId.getId());
                 inventory.setProductId(productId);
             }
+            Collection<OrderLine> attachedOrderLineCollection = new ArrayList<OrderLine>();
+            for (OrderLine orderLineCollectionOrderLineToAttach : inventory.getOrderLineCollection()) {
+                orderLineCollectionOrderLineToAttach = em.getReference(orderLineCollectionOrderLineToAttach.getClass(), orderLineCollectionOrderLineToAttach.getId());
+                attachedOrderLineCollection.add(orderLineCollectionOrderLineToAttach);
+            }
+            inventory.setOrderLineCollection(attachedOrderLineCollection);
             em.persist(inventory);
+            if (createBy != null) {
+                createBy.getInventoryCollection().add(inventory);
+                createBy = em.merge(createBy);
+            }
             if (productId != null) {
                 productId.getInventoryCollection().add(inventory);
                 productId = em.merge(productId);
+            }
+            for (OrderLine orderLineCollectionOrderLine : inventory.getOrderLineCollection()) {
+                orderLineCollectionOrderLine.getInventoryCollection().add(inventory);
+                orderLineCollectionOrderLine = em.merge(orderLineCollectionOrderLine);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -67,13 +93,36 @@ public class InventoryJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Inventory persistentInventory = em.find(Inventory.class, inventory.getId());
+            Account createByOld = persistentInventory.getCreateBy();
+            Account createByNew = inventory.getCreateBy();
             Product productIdOld = persistentInventory.getProductId();
             Product productIdNew = inventory.getProductId();
+            Collection<OrderLine> orderLineCollectionOld = persistentInventory.getOrderLineCollection();
+            Collection<OrderLine> orderLineCollectionNew = inventory.getOrderLineCollection();
+            if (createByNew != null) {
+                createByNew = em.getReference(createByNew.getClass(), createByNew.getId());
+                inventory.setCreateBy(createByNew);
+            }
             if (productIdNew != null) {
                 productIdNew = em.getReference(productIdNew.getClass(), productIdNew.getId());
                 inventory.setProductId(productIdNew);
             }
+            Collection<OrderLine> attachedOrderLineCollectionNew = new ArrayList<OrderLine>();
+            for (OrderLine orderLineCollectionNewOrderLineToAttach : orderLineCollectionNew) {
+                orderLineCollectionNewOrderLineToAttach = em.getReference(orderLineCollectionNewOrderLineToAttach.getClass(), orderLineCollectionNewOrderLineToAttach.getId());
+                attachedOrderLineCollectionNew.add(orderLineCollectionNewOrderLineToAttach);
+            }
+            orderLineCollectionNew = attachedOrderLineCollectionNew;
+            inventory.setOrderLineCollection(orderLineCollectionNew);
             inventory = em.merge(inventory);
+            if (createByOld != null && !createByOld.equals(createByNew)) {
+                createByOld.getInventoryCollection().remove(inventory);
+                createByOld = em.merge(createByOld);
+            }
+            if (createByNew != null && !createByNew.equals(createByOld)) {
+                createByNew.getInventoryCollection().add(inventory);
+                createByNew = em.merge(createByNew);
+            }
             if (productIdOld != null && !productIdOld.equals(productIdNew)) {
                 productIdOld.getInventoryCollection().remove(inventory);
                 productIdOld = em.merge(productIdOld);
@@ -81,6 +130,18 @@ public class InventoryJpaController implements Serializable {
             if (productIdNew != null && !productIdNew.equals(productIdOld)) {
                 productIdNew.getInventoryCollection().add(inventory);
                 productIdNew = em.merge(productIdNew);
+            }
+            for (OrderLine orderLineCollectionOldOrderLine : orderLineCollectionOld) {
+                if (!orderLineCollectionNew.contains(orderLineCollectionOldOrderLine)) {
+                    orderLineCollectionOldOrderLine.getInventoryCollection().remove(inventory);
+                    orderLineCollectionOldOrderLine = em.merge(orderLineCollectionOldOrderLine);
+                }
+            }
+            for (OrderLine orderLineCollectionNewOrderLine : orderLineCollectionNew) {
+                if (!orderLineCollectionOld.contains(orderLineCollectionNewOrderLine)) {
+                    orderLineCollectionNewOrderLine.getInventoryCollection().add(inventory);
+                    orderLineCollectionNewOrderLine = em.merge(orderLineCollectionNewOrderLine);
+                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -111,10 +172,20 @@ public class InventoryJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The inventory with id " + id + " no longer exists.", enfe);
             }
+            Account createBy = inventory.getCreateBy();
+            if (createBy != null) {
+                createBy.getInventoryCollection().remove(inventory);
+                createBy = em.merge(createBy);
+            }
             Product productId = inventory.getProductId();
             if (productId != null) {
                 productId.getInventoryCollection().remove(inventory);
                 productId = em.merge(productId);
+            }
+            Collection<OrderLine> orderLineCollection = inventory.getOrderLineCollection();
+            for (OrderLine orderLineCollectionOrderLine : orderLineCollection) {
+                orderLineCollectionOrderLine.getInventoryCollection().remove(inventory);
+                orderLineCollectionOrderLine = em.merge(orderLineCollectionOrderLine);
             }
             em.remove(inventory);
             em.getTransaction().commit();

@@ -5,6 +5,7 @@
  */
 package LibData.JPAControllers;
 
+import LibData.JPAControllers.exceptions.IllegalOrphanException;
 import LibData.JPAControllers.exceptions.NonexistentEntityException;
 import LibData.JPAControllers.exceptions.PreexistingEntityException;
 import java.io.Serializable;
@@ -16,7 +17,6 @@ import LibData.Models.Account;
 import LibData.Models.Book;
 import LibData.Models.Product;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,9 +36,20 @@ public class BookJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Book book) throws PreexistingEntityException, Exception {
-        if (book.getProductCollection() == null) {
-            book.setProductCollection(new ArrayList<Product>());
+    public void create(Book book) throws IllegalOrphanException, PreexistingEntityException, Exception {
+        List<String> illegalOrphanMessages = null;
+        Product productOrphanCheck = book.getProduct();
+        if (productOrphanCheck != null) {
+            Book oldBookOfProduct = productOrphanCheck.getBook();
+            if (oldBookOfProduct != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("The Product " + productOrphanCheck + " already has an item of type Book whose product column cannot be null. Please make another selection for the product field.");
+            }
+        }
+        if (illegalOrphanMessages != null) {
+            throw new IllegalOrphanException(illegalOrphanMessages);
         }
         EntityManager em = null;
         try {
@@ -49,24 +60,23 @@ public class BookJpaController implements Serializable {
                 createdBy = em.getReference(createdBy.getClass(), createdBy.getId());
                 book.setCreatedBy(createdBy);
             }
-            Collection<Product> attachedProductCollection = new ArrayList<Product>();
-            for (Product productCollectionProductToAttach : book.getProductCollection()) {
-                productCollectionProductToAttach = em.getReference(productCollectionProductToAttach.getClass(), productCollectionProductToAttach.getId());
-                attachedProductCollection.add(productCollectionProductToAttach);
+            Product product = book.getProduct();
+            if (product != null) {
+                product = em.getReference(product.getClass(), product.getId());
+                book.setProduct(product);
             }
-            book.setProductCollection(attachedProductCollection);
             em.persist(book);
             if (createdBy != null) {
                 createdBy.getBookCollection().add(book);
                 createdBy = em.merge(createdBy);
             }
-            for (Product productCollectionProduct : book.getProductCollection()) {
-                productCollectionProduct.getBookCollection().add(book);
-                productCollectionProduct = em.merge(productCollectionProduct);
+            if (product != null) {
+                product.setBook(book);
+                product = em.merge(product);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findBook(book.getId()) != null) {
+            if (findBook(book.getProductId()) != null) {
                 throw new PreexistingEntityException("Book " + book + " already exists.", ex);
             }
             throw ex;
@@ -77,27 +87,37 @@ public class BookJpaController implements Serializable {
         }
     }
 
-    public void edit(Book book) throws NonexistentEntityException, Exception {
+    public void edit(Book book) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Book persistentBook = em.find(Book.class, book.getId());
+            Book persistentBook = em.find(Book.class, book.getProductId());
             Account createdByOld = persistentBook.getCreatedBy();
             Account createdByNew = book.getCreatedBy();
-            Collection<Product> productCollectionOld = persistentBook.getProductCollection();
-            Collection<Product> productCollectionNew = book.getProductCollection();
+            Product productOld = persistentBook.getProduct();
+            Product productNew = book.getProduct();
+            List<String> illegalOrphanMessages = null;
+            if (productNew != null && !productNew.equals(productOld)) {
+                Book oldBookOfProduct = productNew.getBook();
+                if (oldBookOfProduct != null) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("The Product " + productNew + " already has an item of type Book whose product column cannot be null. Please make another selection for the product field.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             if (createdByNew != null) {
                 createdByNew = em.getReference(createdByNew.getClass(), createdByNew.getId());
                 book.setCreatedBy(createdByNew);
             }
-            Collection<Product> attachedProductCollectionNew = new ArrayList<Product>();
-            for (Product productCollectionNewProductToAttach : productCollectionNew) {
-                productCollectionNewProductToAttach = em.getReference(productCollectionNewProductToAttach.getClass(), productCollectionNewProductToAttach.getId());
-                attachedProductCollectionNew.add(productCollectionNewProductToAttach);
+            if (productNew != null) {
+                productNew = em.getReference(productNew.getClass(), productNew.getId());
+                book.setProduct(productNew);
             }
-            productCollectionNew = attachedProductCollectionNew;
-            book.setProductCollection(productCollectionNew);
             book = em.merge(book);
             if (createdByOld != null && !createdByOld.equals(createdByNew)) {
                 createdByOld.getBookCollection().remove(book);
@@ -107,23 +127,19 @@ public class BookJpaController implements Serializable {
                 createdByNew.getBookCollection().add(book);
                 createdByNew = em.merge(createdByNew);
             }
-            for (Product productCollectionOldProduct : productCollectionOld) {
-                if (!productCollectionNew.contains(productCollectionOldProduct)) {
-                    productCollectionOldProduct.getBookCollection().remove(book);
-                    productCollectionOldProduct = em.merge(productCollectionOldProduct);
-                }
+            if (productOld != null && !productOld.equals(productNew)) {
+                productOld.setBook(null);
+                productOld = em.merge(productOld);
             }
-            for (Product productCollectionNewProduct : productCollectionNew) {
-                if (!productCollectionOld.contains(productCollectionNewProduct)) {
-                    productCollectionNewProduct.getBookCollection().add(book);
-                    productCollectionNewProduct = em.merge(productCollectionNewProduct);
-                }
+            if (productNew != null && !productNew.equals(productOld)) {
+                productNew.setBook(book);
+                productNew = em.merge(productNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = book.getId();
+                String id = book.getProductId();
                 if (findBook(id) == null) {
                     throw new NonexistentEntityException("The book with id " + id + " no longer exists.");
                 }
@@ -144,7 +160,7 @@ public class BookJpaController implements Serializable {
             Book book;
             try {
                 book = em.getReference(Book.class, id);
-                book.getId();
+                book.getProductId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The book with id " + id + " no longer exists.", enfe);
             }
@@ -153,10 +169,10 @@ public class BookJpaController implements Serializable {
                 createdBy.getBookCollection().remove(book);
                 createdBy = em.merge(createdBy);
             }
-            Collection<Product> productCollection = book.getProductCollection();
-            for (Product productCollectionProduct : productCollection) {
-                productCollectionProduct.getBookCollection().remove(book);
-                productCollectionProduct = em.merge(productCollectionProduct);
+            Product product = book.getProduct();
+            if (product != null) {
+                product.setBook(null);
+                product = em.merge(product);
             }
             em.remove(book);
             em.getTransaction().commit();

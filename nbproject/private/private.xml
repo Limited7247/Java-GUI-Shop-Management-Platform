@@ -4,16 +4,21 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Providers/BookProvider.java</file>
-            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Views/Book/UpdateBookDialog.java</file>
-            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/JPAControllers/BookJpaController.java</file>
-            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Views/Book/AddBookDialog.java</file>
-            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Models/Book.java</file>
-            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Models/Book/BookViewModel.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Business/GlobalConfigs.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Models/Inventory.java</file>
             <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Models/Book/BookTableModel.java</file>
-            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Views/Book/BooksFrame.java</file>
             <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Models/Factories/BookFactory.java</file>
             <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Providers/ProductProvider.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Models/Inventory/InventoryTableModel.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Views/Inventory/InventoryFrame.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Business/Configs/InventoryConfigs.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Views/Book/UpdateBookDialog.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Controllers/InventoryController.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Providers/InventoryProvider.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Views/Book/BooksFrame.java</file>
             <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Controllers/BookController.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Controllers/MainController.java</file>
+            <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/LibData/Business/Configs/BookConfigs.java</file>
             <file>file:/C:/Users/Limited/Documents/GitHub/MVCJava/src/MainPackage/Models/Book/UpdateBookModel.java</file>
         </group>
     </open-files>

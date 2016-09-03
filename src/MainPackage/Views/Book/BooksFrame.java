@@ -622,7 +622,14 @@ public class BooksFrame extends javax.swing.JFrame {
     private void btnReloadBooksListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadBooksListActionPerformed
         // TODO add your handling code here:
         txtBookSearch.setText("");
-        _bookController.ShowBooksTable(this);
+        _bookController.Find(this, txtBookSearch.getText());
+//        _bookController.ShowBooksTable(this);
+//        JOptionPane.showMessageDialog(
+//                this, 
+//                , 
+//                "Tải lại danh sách", 
+//                JOptionPane.INFORMATION_MESSAGE
+//        );
     }//GEN-LAST:event_btnReloadBooksListActionPerformed
 
     private void btnPrintBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintBookActionPerformed

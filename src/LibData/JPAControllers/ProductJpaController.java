@@ -13,11 +13,11 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import LibData.Models.Account;
 import LibData.Models.Book;
+import LibData.Models.Account;
+import LibData.Models.OrderLine;
 import java.util.ArrayList;
 import java.util.Collection;
-import LibData.Models.OrderLine;
 import LibData.Models.Inventory;
 import LibData.Models.Product;
 import java.util.List;
@@ -40,9 +40,6 @@ public class ProductJpaController implements Serializable {
     }
 
     public void create(Product product) throws PreexistingEntityException, Exception {
-        if (product.getBookCollection() == null) {
-            product.setBookCollection(new ArrayList<Book>());
-        }
         if (product.getOrderLineCollection() == null) {
             product.setOrderLineCollection(new ArrayList<OrderLine>());
         }
@@ -53,17 +50,16 @@ public class ProductJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Book book = product.getBook();
+            if (book != null) {
+                book = em.getReference(book.getClass(), book.getProductId());
+                product.setBook(book);
+            }
             Account createdBy = product.getCreatedBy();
             if (createdBy != null) {
                 createdBy = em.getReference(createdBy.getClass(), createdBy.getId());
                 product.setCreatedBy(createdBy);
             }
-            Collection<Book> attachedBookCollection = new ArrayList<Book>();
-            for (Book bookCollectionBookToAttach : product.getBookCollection()) {
-                bookCollectionBookToAttach = em.getReference(bookCollectionBookToAttach.getClass(), bookCollectionBookToAttach.getId());
-                attachedBookCollection.add(bookCollectionBookToAttach);
-            }
-            product.setBookCollection(attachedBookCollection);
             Collection<OrderLine> attachedOrderLineCollection = new ArrayList<OrderLine>();
             for (OrderLine orderLineCollectionOrderLineToAttach : product.getOrderLineCollection()) {
                 orderLineCollectionOrderLineToAttach = em.getReference(orderLineCollectionOrderLineToAttach.getClass(), orderLineCollectionOrderLineToAttach.getId());
@@ -77,13 +73,18 @@ public class ProductJpaController implements Serializable {
             }
             product.setInventoryCollection(attachedInventoryCollection);
             em.persist(product);
+            if (book != null) {
+                Product oldProductOfBook = book.getProduct();
+                if (oldProductOfBook != null) {
+                    oldProductOfBook.setBook(null);
+                    oldProductOfBook = em.merge(oldProductOfBook);
+                }
+                book.setProduct(product);
+                book = em.merge(book);
+            }
             if (createdBy != null) {
                 createdBy.getProductCollection().add(product);
                 createdBy = em.merge(createdBy);
-            }
-            for (Book bookCollectionBook : product.getBookCollection()) {
-                bookCollectionBook.getProductCollection().add(product);
-                bookCollectionBook = em.merge(bookCollectionBook);
             }
             for (OrderLine orderLineCollectionOrderLine : product.getOrderLineCollection()) {
                 Product oldProductIdOfOrderLineCollectionOrderLine = orderLineCollectionOrderLine.getProductId();
@@ -122,15 +123,21 @@ public class ProductJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Product persistentProduct = em.find(Product.class, product.getId());
+            Book bookOld = persistentProduct.getBook();
+            Book bookNew = product.getBook();
             Account createdByOld = persistentProduct.getCreatedBy();
             Account createdByNew = product.getCreatedBy();
-            Collection<Book> bookCollectionOld = persistentProduct.getBookCollection();
-            Collection<Book> bookCollectionNew = product.getBookCollection();
             Collection<OrderLine> orderLineCollectionOld = persistentProduct.getOrderLineCollection();
             Collection<OrderLine> orderLineCollectionNew = product.getOrderLineCollection();
             Collection<Inventory> inventoryCollectionOld = persistentProduct.getInventoryCollection();
             Collection<Inventory> inventoryCollectionNew = product.getInventoryCollection();
             List<String> illegalOrphanMessages = null;
+            if (bookOld != null && !bookOld.equals(bookNew)) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("You must retain Book " + bookOld + " since its product field is not nullable.");
+            }
             for (OrderLine orderLineCollectionOldOrderLine : orderLineCollectionOld) {
                 if (!orderLineCollectionNew.contains(orderLineCollectionOldOrderLine)) {
                     if (illegalOrphanMessages == null) {
@@ -150,17 +157,14 @@ public class ProductJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            if (bookNew != null) {
+                bookNew = em.getReference(bookNew.getClass(), bookNew.getProductId());
+                product.setBook(bookNew);
+            }
             if (createdByNew != null) {
                 createdByNew = em.getReference(createdByNew.getClass(), createdByNew.getId());
                 product.setCreatedBy(createdByNew);
             }
-            Collection<Book> attachedBookCollectionNew = new ArrayList<Book>();
-            for (Book bookCollectionNewBookToAttach : bookCollectionNew) {
-                bookCollectionNewBookToAttach = em.getReference(bookCollectionNewBookToAttach.getClass(), bookCollectionNewBookToAttach.getId());
-                attachedBookCollectionNew.add(bookCollectionNewBookToAttach);
-            }
-            bookCollectionNew = attachedBookCollectionNew;
-            product.setBookCollection(bookCollectionNew);
             Collection<OrderLine> attachedOrderLineCollectionNew = new ArrayList<OrderLine>();
             for (OrderLine orderLineCollectionNewOrderLineToAttach : orderLineCollectionNew) {
                 orderLineCollectionNewOrderLineToAttach = em.getReference(orderLineCollectionNewOrderLineToAttach.getClass(), orderLineCollectionNewOrderLineToAttach.getId());
@@ -176,6 +180,15 @@ public class ProductJpaController implements Serializable {
             inventoryCollectionNew = attachedInventoryCollectionNew;
             product.setInventoryCollection(inventoryCollectionNew);
             product = em.merge(product);
+            if (bookNew != null && !bookNew.equals(bookOld)) {
+                Product oldProductOfBook = bookNew.getProduct();
+                if (oldProductOfBook != null) {
+                    oldProductOfBook.setBook(null);
+                    oldProductOfBook = em.merge(oldProductOfBook);
+                }
+                bookNew.setProduct(product);
+                bookNew = em.merge(bookNew);
+            }
             if (createdByOld != null && !createdByOld.equals(createdByNew)) {
                 createdByOld.getProductCollection().remove(product);
                 createdByOld = em.merge(createdByOld);
@@ -183,18 +196,6 @@ public class ProductJpaController implements Serializable {
             if (createdByNew != null && !createdByNew.equals(createdByOld)) {
                 createdByNew.getProductCollection().add(product);
                 createdByNew = em.merge(createdByNew);
-            }
-            for (Book bookCollectionOldBook : bookCollectionOld) {
-                if (!bookCollectionNew.contains(bookCollectionOldBook)) {
-                    bookCollectionOldBook.getProductCollection().remove(product);
-                    bookCollectionOldBook = em.merge(bookCollectionOldBook);
-                }
-            }
-            for (Book bookCollectionNewBook : bookCollectionNew) {
-                if (!bookCollectionOld.contains(bookCollectionNewBook)) {
-                    bookCollectionNewBook.getProductCollection().add(product);
-                    bookCollectionNewBook = em.merge(bookCollectionNewBook);
-                }
             }
             for (OrderLine orderLineCollectionNewOrderLine : orderLineCollectionNew) {
                 if (!orderLineCollectionOld.contains(orderLineCollectionNewOrderLine)) {
@@ -248,6 +249,13 @@ public class ProductJpaController implements Serializable {
                 throw new NonexistentEntityException("The product with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
+            Book bookOrphanCheck = product.getBook();
+            if (bookOrphanCheck != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Product (" + product + ") cannot be destroyed since the Book " + bookOrphanCheck + " in its book field has a non-nullable product field.");
+            }
             Collection<OrderLine> orderLineCollectionOrphanCheck = product.getOrderLineCollection();
             for (OrderLine orderLineCollectionOrphanCheckOrderLine : orderLineCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
@@ -269,11 +277,6 @@ public class ProductJpaController implements Serializable {
             if (createdBy != null) {
                 createdBy.getProductCollection().remove(product);
                 createdBy = em.merge(createdBy);
-            }
-            Collection<Book> bookCollection = product.getBookCollection();
-            for (Book bookCollectionBook : bookCollection) {
-                bookCollectionBook.getProductCollection().remove(product);
-                bookCollectionBook = em.merge(bookCollectionBook);
             }
             em.remove(product);
             em.getTransaction().commit();

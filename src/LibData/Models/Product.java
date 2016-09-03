@@ -15,11 +15,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -67,10 +67,10 @@ public class Product implements Serializable {
     private String type;
     @Column(name = "Price")
     private BigInteger price;
-    @ManyToMany(mappedBy = "productCollection")
-    private Collection<Book> bookCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
     private Collection<OrderLine> orderLineCollection;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "product")
+    private Book book;
     @JoinColumn(name = "CreatedBy", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Account createdBy;
@@ -150,21 +150,20 @@ public class Product implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Book> getBookCollection() {
-        return bookCollection;
-    }
-
-    public void setBookCollection(Collection<Book> bookCollection) {
-        this.bookCollection = bookCollection;
-    }
-
-    @XmlTransient
     public Collection<OrderLine> getOrderLineCollection() {
         return orderLineCollection;
     }
 
     public void setOrderLineCollection(Collection<OrderLine> orderLineCollection) {
         this.orderLineCollection = orderLineCollection;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public Account getCreatedBy() {

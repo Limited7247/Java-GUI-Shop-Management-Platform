@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package LibData.Models;
 
 import java.io.Serializable;
@@ -126,5 +125,5 @@ public class Sysdiagrams implements Serializable {
     public String toString() {
         return "LibData.Models.Sysdiagrams[ diagramId=" + diagramId + " ]";
     }
-
+    
 }

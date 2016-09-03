@@ -6,12 +6,14 @@
 package LibData.Models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -66,6 +69,8 @@ public class OrderLine implements Serializable {
     @Column(name = "CreateTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
+    @ManyToMany(mappedBy = "orderLineCollection")
+    private Collection<Inventory> inventoryCollection;
     @JoinColumn(name = "CreateBy", referencedColumnName = "Id")
     @ManyToOne(optional = false)
     private Account createBy;
@@ -156,6 +161,15 @@ public class OrderLine implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @XmlTransient
+    public Collection<Inventory> getInventoryCollection() {
+        return inventoryCollection;
+    }
+
+    public void setInventoryCollection(Collection<Inventory> inventoryCollection) {
+        this.inventoryCollection = inventoryCollection;
     }
 
     public Account getCreateBy() {

@@ -5,10 +5,12 @@
  */
 package LibData.Providers;
 
+import static LibData.Business.Configs.InventoryConfigs.*;
 import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.IProvider;
 import LibData.JPAControllers.BookJpaController;
 import LibData.Models.Book;
 import static LibData.Models.Factories.ProductFactory.createProductByBook;
+import LibData.Models.Inventory;
 import LibData.Models.Product;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -33,7 +35,7 @@ public class BookProvider implements IProvider {
     private JinqJPAStreamProvider streams = new JinqJPAStreamProvider(ProviderHelper.getEntityManagerFactory());
 
     private BookJpaController getJPABooks() {
-        return jpaBook;
+        return new BookJpaController(ProviderHelper.getEntityManagerFactory());
     }
 
     private JPAJinqStream<Book> getJinqBooks() {
@@ -41,6 +43,7 @@ public class BookProvider implements IProvider {
     }
 
     private ProductProvider _productProvider = new ProductProvider();
+    private InventoryProvider _inventoryProvider = new InventoryProvider();
 
     private void showLog(Exception ex) {
         Logger.getLogger(BookProvider.class.getName()).log(Level.SEVERE, null, ex);
@@ -57,7 +60,7 @@ public class BookProvider implements IProvider {
 
     public Book getById(String id) {
         try {
-            return getJPABooks().findBook(id);
+            return getJinqBooks().where(m -> m.getId().equals(id)).findOne().get();
         } catch (Exception ex) {
             showLog(ex);
             return null;
@@ -102,11 +105,21 @@ public class BookProvider implements IProvider {
 
             book.setCreateTime(new Date());
 
+            /// Product
             new ProductProvider().Insert(createProductByBook(book));
-            ArrayList<Product> product = new ArrayList<Product>();
-            product.add(_productProvider.getByIdCode(book.getIdCode()));
-            book.setProductCollection(product);
+            book.setProduct(_productProvider.getByIdCode(book.getIdCode()));
+            book.setProductId(book.getProduct().getId());
 
+            /// Inventory
+            Inventory inventory = new Inventory();
+            inventory.setProductId(book.getProduct());
+            inventory.setUnit(INVENTORY_UNIT_TYPE_BOOK);
+            inventory.setQuantity(0);
+            inventory.setCreateBy(book.getCreatedBy());
+            inventory.setStatus(INVENTORY_STATUS_UPTODATE);
+            inventory.setType(INVENTORY_TYPE_INIT);
+            new InventoryProvider().Insert(inventory);
+            
             getJPABooks().create(book);
             return true;
         } catch (Exception ex) {
@@ -115,13 +128,38 @@ public class BookProvider implements IProvider {
         }
     }
 
+    public boolean CanBeDeleted(String id)
+    {
+        try {
+            List<Inventory> list = (List<Inventory>) getById(id).getProduct().getInventoryCollection();
+            if (list == null || list.isEmpty()) return true;
+            
+            if (list.size() == 1 && list.get(0).getType() == INVENTORY_TYPE_INIT) return true;
+            
+            return false;
+            
+        } catch (Exception e) {
+            showLog(e);
+            return false;
+        }
+    }
+    
     @Override
     public boolean Delete(String id) {
         try {
-            _productProvider.Delete(
-                    _productProvider.getByIdCode(getById(id).getIdCode()).getId()
-            );
-            getJPABooks().destroy(id);
+            if (!CanBeDeleted(id)) return false;
+            
+//            String productId = getById(id).getProductId();
+            Product product = getById(id).getProduct();
+            
+            /// Delete Book
+            getJPABooks().destroy(product.getId());
+            /// Delete Inventory
+//            new InventoryProvider().DeleteByProductId(product.getId());
+//            /// Delete Product
+////            product.setInventoryCollection(null);
+////            _productProvider.Update(product);
+//            new ProductProvider().Delete(product.getId());
 
             return true;
         } catch (Exception ex) {
@@ -138,12 +176,12 @@ public class BookProvider implements IProvider {
             Book oldBook = getById(book.getId());
             Book updateBook = oldBook;
 
-            Product product = _productProvider.getByIdCode(oldBook.getIdCode());
+            Product product = oldBook.getProduct();
             product.setName(book.getName());
             product.setType(book.getType());
             product.setPrice(book.getPrice());
             _productProvider.Update(product);
-            updateBook.setProductCollection(oldBook.getProductCollection());
+            updateBook.setProduct(_productProvider.getByIdCode(product.getIdCode()));
 
             if (book.getIsbn() != null) {
                 updateBook.setIsbn(book.getIsbn());
