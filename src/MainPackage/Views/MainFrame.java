@@ -186,7 +186,7 @@ public class MainFrame extends javax.swing.JFrame {
                 }
 
                 while (!_accountController.CheckAccount(_account.get())) {
-                    _accountController.Login(_account);
+                    _accountController.Login(frmMain, _account);
                 }
 
                 frmMain.setVisible(true);

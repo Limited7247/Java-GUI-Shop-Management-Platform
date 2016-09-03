@@ -27,6 +27,14 @@ public class AccountFactory {
         return account;
     }
 
+    public static Account createAccount(String id) {
+        Account account = createAccount();
+
+        account.setId(id);
+
+        return account;
+    }
+
     public static Account createAccount(String Username, String PasswordHash) {
         Account account = createAccount();
 
@@ -38,9 +46,9 @@ public class AccountFactory {
 
     public static Account createAccount(String Username, String PasswordHash, String Email) {
         Account account = createAccount(Username, PasswordHash);
-        
+
         account.setEmail(Email);
-        
+
         return account;
     }
 

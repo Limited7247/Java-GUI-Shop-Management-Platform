@@ -40,7 +40,7 @@ public class ConfigsJpaController implements Serializable {
             em.persist(configs);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findConfigs(configs.getKey()) != null) {
+            if (findConfigs(configs.getIdKey()) != null) {
                 throw new PreexistingEntityException("Configs " + configs + " already exists.", ex);
             }
             throw ex;
@@ -61,7 +61,7 @@ public class ConfigsJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = configs.getKey();
+                String id = configs.getIdKey();
                 if (findConfigs(id) == null) {
                     throw new NonexistentEntityException("The configs with id " + id + " no longer exists.");
                 }
@@ -82,7 +82,7 @@ public class ConfigsJpaController implements Serializable {
             Configs configs;
             try {
                 configs = em.getReference(Configs.class, id);
-                configs.getKey();
+                configs.getIdKey();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The configs with id " + id + " no longer exists.", enfe);
             }

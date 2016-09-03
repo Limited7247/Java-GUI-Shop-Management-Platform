@@ -6,6 +6,7 @@
 package LibData.Models;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -64,9 +65,8 @@ public class Product implements Serializable {
     @Basic(optional = false)
     @Column(name = "Type")
     private String type;
-    @Basic(optional = false)
     @Column(name = "Price")
-    private long price;
+    private BigInteger price;
     @ManyToMany(mappedBy = "productCollection")
     private Collection<Book> bookCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
@@ -84,14 +84,13 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    public Product(String id, String idCode, Date createTime, int status, String name, String type, long price) {
+    public Product(String id, String idCode, Date createTime, int status, String name, String type) {
         this.id = id;
         this.idCode = idCode;
         this.createTime = createTime;
         this.status = status;
         this.name = name;
         this.type = type;
-        this.price = price;
     }
 
     public String getId() {
@@ -142,11 +141,11 @@ public class Product implements Serializable {
         this.type = type;
     }
 
-    public long getPrice() {
+    public BigInteger getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(BigInteger price) {
         this.price = price;
     }
 

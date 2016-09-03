@@ -3,14 +3,13 @@
   <persistence-unit name="MVCDemoPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>LibData.Models.Account</class>
-    <class>LibData.Models.Inventory</class>
-    <class>LibData.Models.Product</class>
-    <class>LibData.Models.OrderLine</class>
     <class>LibData.Models.Book</class>
-    <class>LibData.Models.Order1</class>
-    <class>LibData.Models.Sysdiagrams</class>
-    <class>LibData.Models.Orders</class>
     <class>LibData.Models.Configs</class>
+    <class>LibData.Models.Inventory</class>
+    <class>LibData.Models.OrderLine</class>
+    <class>LibData.Models.Orders</class>
+    <class>LibData.Models.Product</class>
+    <class>LibData.Models.Sysdiagrams</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://123.30.183.172\SQLEXPRESS:1433;databaseName=AccommodationManagement"/>
       <property name="javax.persistence.jdbc.user" value="datlt"/>
