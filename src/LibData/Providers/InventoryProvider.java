@@ -10,9 +10,13 @@ import static LibData.Business.Configs.InventoryConfigs.*;
 import LibData.JPAControllers.BookJpaController;
 import LibData.JPAControllers.InventoryJpaController;
 import LibData.Models.Account;
+import LibData.Models.Book;
 import LibData.Models.Inventory;
 import static LibData.Providers.ProviderHelper.*;
 import LimitedSolution.Utilities.LibDataUtilities.ProviderUtilities.IProvider;
+import MainPackage.Models.Book.BookTableModel;
+import MainPackage.Models.Inventory.InventoryInformations;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -347,6 +351,29 @@ public class InventoryProvider implements IProvider {
         } catch (Exception e) {
             return getAll();
         }
+    }
+
+    public boolean addInventoryInformation(BookTableModel model) {
+        try {
+            model.inventoryInformations = new ArrayList<InventoryInformations>();
+
+            for (Book book : model.list) {
+                model.inventoryInformations.add(
+                        new InventoryInformations(
+                                book.getProductId(),
+                                getInStockByProductId(book.getProductId()) + "",
+                                "", ""
+//                                getInQuantitiesByProductId(book.getProductId()) + "",
+//                                getOutQuantitiesByProductId(book.getProductId()) + ""
+                        )
+                );
+            }
+            return true;
+        } catch (Exception e) {
+            showLog(e);
+            return false;
+        }
+
     }
 
 }

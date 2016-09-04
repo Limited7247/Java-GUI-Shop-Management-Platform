@@ -51,8 +51,11 @@ public class BookController {
     private InventoryProvider _inventoryProvider = new InventoryProvider();
 
     public void ShowBooksTable(BooksFrame booksFrame) {
-        booksFrame.booksTable.setModel(new BookTableModel(_bookProvider.getAll()));
-        TableColumnAdjuster(booksFrame.booksTable);
+        BookTableModel model = new BookTableModel(_bookProvider.getAll()); 
+        _inventoryProvider.addInventoryInformation(model);
+        
+        booksFrame.booksTable.setModel(model);
+        TableColumnAdjuster(booksFrame.booksTable, 30);
     }
 
     public void AddBook(BooksFrame booksFrame, Account account) {
@@ -169,8 +172,11 @@ public class BookController {
 
     public void Find(BooksFrame booksFrame, String text) {
         List<Book> list = _bookProvider.Find(text);
-        booksFrame.booksTable.setModel(new BookTableModel(list));
-        TableColumnAdjuster(booksFrame.booksTable);
+        BookTableModel model = new BookTableModel(list);
+        _inventoryProvider.addInventoryInformation(model);
+        
+        booksFrame.booksTable.setModel(model);
+        TableColumnAdjuster(booksFrame.booksTable, 30);
         JOptionPane.showMessageDialog(
                 booksFrame,
                 "Tìm thấy " + list.size() + " kết quả",

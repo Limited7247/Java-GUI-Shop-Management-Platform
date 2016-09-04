@@ -111,6 +111,8 @@ public class InventoryFrame extends javax.swing.JFrame {
         btnReloadBooksList = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Kiểm kê");
+        setResizable(false);
 
         inventoriesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -129,11 +131,6 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         txtIdCode.setEditable(false);
         txtIdCode.setDisabledTextColor(java.awt.Color.black);
-        txtIdCode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtIdCodeActionPerformed(evt);
-            }
-        });
 
         jLabel1.setText("Mã Sản phẩm");
 
@@ -148,11 +145,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         txtName.setEditable(false);
         txtName.setDisabledTextColor(java.awt.Color.black);
         txtName.setEnabled(false);
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
 
         jLabel7.setText("Phân loại");
 
@@ -178,21 +170,20 @@ public class InventoryFrame extends javax.swing.JFrame {
                         .addComponent(jLabel11)
                         .addGap(18, 18, 18)
                         .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-                        .addComponent(txtType)))
+                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                    .addComponent(txtType))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel11)
-                        .addComponent(txtIdCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtIdCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -209,11 +200,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         jLabel2.setText("Số lượng");
 
         txtInventoryInEnter.setDisabledTextColor(java.awt.Color.black);
-        txtInventoryInEnter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInventoryInEnterActionPerformed(evt);
-            }
-        });
 
         btnInventoryIn.setText("NHẬP KHO");
         btnInventoryIn.addActionListener(new java.awt.event.ActionListener() {
@@ -259,11 +245,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         });
 
         txtInventoryOutEnter.setDisabledTextColor(java.awt.Color.black);
-        txtInventoryOutEnter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInventoryOutEnterActionPerformed(evt);
-            }
-        });
 
         jLabel3.setText("Số lượng");
 
@@ -299,11 +280,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         jLabel4.setText("Số lượng");
 
         txtInventoryCheckoutEnter.setDisabledTextColor(java.awt.Color.black);
-        txtInventoryCheckoutEnter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInventoryCheckoutEnterActionPerformed(evt);
-            }
-        });
 
         btnInventoryCheckout.setText("CẬP NHẬT");
         btnInventoryCheckout.addActionListener(new java.awt.event.ActionListener() {
@@ -343,11 +319,6 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         txtInventoryInStock.setEditable(false);
         txtInventoryInStock.setDisabledTextColor(java.awt.Color.black);
-        txtInventoryInStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInventoryInStockActionPerformed(evt);
-            }
-        });
 
         jLabel13.setText("Tồn kho");
 
@@ -355,21 +326,11 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         txtInventoryIn.setEditable(false);
         txtInventoryIn.setDisabledTextColor(java.awt.Color.black);
-        txtInventoryIn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInventoryInActionPerformed(evt);
-            }
-        });
 
         jLabel15.setText("Xuất ra");
 
         txtInventoryOut.setEditable(false);
         txtInventoryOut.setDisabledTextColor(java.awt.Color.black);
-        txtInventoryOut.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtInventoryOutActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -490,38 +451,6 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtIdCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdCodeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdCodeActionPerformed
-
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNameActionPerformed
-
-    private void txtInventoryInEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryInEnterActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInventoryInEnterActionPerformed
-
-    private void txtInventoryOutEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryOutEnterActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInventoryOutEnterActionPerformed
-
-    private void txtInventoryCheckoutEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryCheckoutEnterActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInventoryCheckoutEnterActionPerformed
-
-    private void txtInventoryInStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryInStockActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInventoryInStockActionPerformed
-
-    private void txtInventoryInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryInActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInventoryInActionPerformed
-
-    private void txtInventoryOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryOutActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtInventoryOutActionPerformed
 
     private void btnInventoryInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryInActionPerformed
         // TODO add your handling code here:

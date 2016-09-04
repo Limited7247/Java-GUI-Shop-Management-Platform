@@ -30,7 +30,8 @@ public class BooksFrame extends javax.swing.JFrame {
     private static BooksFrame _booksFrame = new BooksFrame();
 
     /// Account for developing
-    private static Account _account = AccountFactory.createAccount("11BDBBEE-EF3B-412F-BF4F-F4C36A1166CE");
+//    private static Account _account = AccountFactory.createAccount("11BDBBEE-EF3B-412F-BF4F-F4C36A1166CE");
+    private static Account _account;
 
     private static Book getSelectedBook() {
         Book book = ((BookTableModel) _booksFrame.booksTable.getModel()).list.get(
@@ -168,11 +169,6 @@ public class BooksFrame extends javax.swing.JFrame {
 
         txtIdCode.setEditable(false);
         txtIdCode.setDisabledTextColor(java.awt.Color.black);
-        txtIdCode.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtIdCodeActionPerformed(evt);
-            }
-        });
 
         jLabel1.setText("Mã sách");
 
@@ -276,11 +272,6 @@ public class BooksFrame extends javax.swing.JFrame {
         txtName.setEditable(false);
         txtName.setDisabledTextColor(java.awt.Color.black);
         txtName.setEnabled(false);
-        txtName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNameActionPerformed(evt);
-            }
-        });
 
         txtType.setEditable(false);
         txtType.setDisabledTextColor(java.awt.Color.black);
@@ -388,11 +379,6 @@ public class BooksFrame extends javax.swing.JFrame {
 
         jTextField12.setEditable(false);
         jTextField12.setDisabledTextColor(java.awt.Color.black);
-        jTextField12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField12ActionPerformed(evt);
-            }
-        });
 
         jLabel13.setText("Tồn kho");
 
@@ -400,21 +386,11 @@ public class BooksFrame extends javax.swing.JFrame {
 
         jTextField13.setEditable(false);
         jTextField13.setDisabledTextColor(java.awt.Color.black);
-        jTextField13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField13ActionPerformed(evt);
-            }
-        });
 
         jLabel15.setText("Xuất ra");
 
         jTextField14.setEditable(false);
         jTextField14.setDisabledTextColor(java.awt.Color.black);
-        jTextField14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField14ActionPerformed(evt);
-            }
-        });
 
         txtInventoryBook.setText("Chi tiết");
 
@@ -531,10 +507,10 @@ public class BooksFrame extends javax.swing.JFrame {
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 176, Short.MAX_VALUE))
-                        .addGap(41, 76, Short.MAX_VALUE))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(28, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -584,16 +560,13 @@ public class BooksFrame extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -641,38 +614,10 @@ public class BooksFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-
-    private void txtIdCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdCodeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdCodeActionPerformed
-
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNameActionPerformed
-
-    private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField12ActionPerformed
-
-    private void jTextField13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField13ActionPerformed
-
-    private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField14ActionPerformed
-
     private void btnReloadBooksListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadBooksListActionPerformed
         // TODO add your handling code here:
         txtBookSearch.setText("");
         _bookController.Find(this, txtBookSearch.getText());
-//        _bookController.ShowBooksTable(this);
-//        JOptionPane.showMessageDialog(
-//                this, 
-//                , 
-//                "Tải lại danh sách", 
-//                JOptionPane.INFORMATION_MESSAGE
-//        );
     }//GEN-LAST:event_btnReloadBooksListActionPerformed
 
     private void btnPrintBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintBookActionPerformed
@@ -727,7 +672,6 @@ public class BooksFrame extends javax.swing.JFrame {
 
     private static void LoadSelectedBookInformation() {
         try {
-//            BookViewModel book = new BookViewModel(getSelectedBook());
             BookViewModel book = _bookController.GetBookInformations(getSelectedBook());
 
             txtIdCode.setText(book.IdCode);

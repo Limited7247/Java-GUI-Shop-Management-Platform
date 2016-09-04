@@ -9,6 +9,7 @@ import LibData.Business.Configs.BookConfigs;
 import LibData.Models.Book;
 import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
 import LimitedSolution.Utilities.JTableHelper;
+import MainPackage.Models.Inventory.InventoryInformations;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ import javax.swing.table.TableColumn;
 public class BookTableModel extends AbstractTableModel {
 
     public List<Book> list;
+    
+    public List<InventoryInformations> inventoryInformations;
 
     public BookTableModel(List<Book> list) {
         this.list = list;
@@ -31,14 +34,16 @@ public class BookTableModel extends AbstractTableModel {
     public static ArrayList<JTableHelper.Column> columnsList = new ArrayList() {
         {
             add(new JTableHelper.Column(0, "STT", 30));
-            add(new JTableHelper.Column(0, "Mã sách", 30));
-            add(new JTableHelper.Column(0, "Mã ISBN", 30));
+            add(new JTableHelper.Column(1, "Mã sách", 30));
+            add(new JTableHelper.Column(2, "Mã ISBN", 30));
 
-            add(new JTableHelper.Column(0, "Tên sách", 30));
-            add(new JTableHelper.Column(0, "Tác giả", 30));
-            add(new JTableHelper.Column(0, "Năm phát hành", 30));
-            add(new JTableHelper.Column(0, "Giá bán", 30));
-            add(new JTableHelper.Column(0, "Tình trạng", 30));
+            add(new JTableHelper.Column(3, "Tên sách", 30));
+            add(new JTableHelper.Column(4, "Tác giả", 30));
+            add(new JTableHelper.Column(5, "Năm phát hành", 30));
+            add(new JTableHelper.Column(6, "Giá bán", 30));
+            add(new JTableHelper.Column(7, "Tình trạng", 30));
+            
+            add(new JTableHelper.Column(8, "Tồn kho", 30));
         }
     };
 
@@ -49,7 +54,7 @@ public class BookTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 8;
+        return 9;
     }
 
     @Override
@@ -63,6 +68,7 @@ public class BookTableModel extends AbstractTableModel {
             case 5:
             case 6:
             case 7:
+            case 8:
                 return columnsList.get(column).Name;
             default:
                 return "";
@@ -91,6 +97,10 @@ public class BookTableModel extends AbstractTableModel {
                     return book.getPrice() != null ? IntToVND(book.getPrice()) : "";
                 case 7:
                     return BookConfigs.getBookStatus(book.getStatus());
+                case 8:
+                    return (inventoryInformations != null && rowIndex < inventoryInformations.size())
+                            ? inventoryInformations.get(rowIndex).InStock
+                            : "";
                 default:
                     return "";
             }
