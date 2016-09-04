@@ -30,6 +30,10 @@ public class BookViewModel {
     public String PublishYear;
     public String PublishMonth;
     public String Details;
+    
+    public String InventoryInStock;
+    public String InventoryIn;
+    public String InventoryOut;
 
     public BookViewModel() {
     }

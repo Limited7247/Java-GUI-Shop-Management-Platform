@@ -33,10 +33,10 @@ public class InventoryTableModel extends AbstractTableModel {
         {
             add(new JTableHelper.Column(0, "STT", 30));
             add(new JTableHelper.Column(0, "Mã Kiểm kê", 30));
-            add(new JTableHelper.Column(0, "Mã Sản phẩm", 30));
+            add(new JTableHelper.Column(0, "Mã Sản phẩm", 90));
             add(new JTableHelper.Column(0, "Tên Sản phẩm", 30));
             add(new JTableHelper.Column(0, "Đơn vị", 30));
-            add(new JTableHelper.Column(0, "Số lượng", 30));
+            add(new JTableHelper.Column(0, "Số lượng", 80));
             add(new JTableHelper.Column(0, "Tình trạng", 30));
         }
     };
@@ -65,7 +65,7 @@ public class InventoryTableModel extends AbstractTableModel {
             
             switch (columnIndex) {
                 case 0:
-                    return columnIndex + 1;
+                    return rowIndex + 1;
                 case 1:
                     return inventory.getIdCode();
                 case 2:

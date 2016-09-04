@@ -118,7 +118,7 @@ public class BookProvider implements IProvider {
             inventory.setCreateBy(book.getCreatedBy());
             inventory.setStatus(INVENTORY_STATUS_UPTODATE);
             inventory.setType(INVENTORY_TYPE_INIT);
-            new InventoryProvider().Insert(inventory);
+            new InventoryProvider().InsertInit(inventory);
             
             getJPABooks().create(book);
             return true;

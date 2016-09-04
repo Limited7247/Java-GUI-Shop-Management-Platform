@@ -13,6 +13,7 @@ import static LimitedSolution.Utilities.DateTimeHelper.getDateTimeString;
 import MainPackage.Controllers.BookController;
 import MainPackage.Models.Book.BookTableModel;
 import MainPackage.Models.Book.BookViewModel;
+import MainPackage.Views.Inventory.InventoryFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
@@ -32,9 +33,11 @@ public class BooksFrame extends javax.swing.JFrame {
     private static Account _account = AccountFactory.createAccount("11BDBBEE-EF3B-412F-BF4F-F4C36A1166CE");
 
     private static Book getSelectedBook() {
-        return ((BookTableModel) _booksFrame.booksTable.getModel()).list.get(
+        Book book = ((BookTableModel) _booksFrame.booksTable.getModel()).list.get(
                 _booksFrame.booksTable.getSelectedRow()
         );
+
+        return book;
     }
 
     /**
@@ -42,6 +45,23 @@ public class BooksFrame extends javax.swing.JFrame {
      */
     public BooksFrame() {
         initComponents();
+    }
+
+    public BooksFrame(Account _account) {
+        this();
+        this._account = _account;
+        
+        _booksFrame = this;
+        _booksFrame.setVisible(true);
+
+        _bookController.ShowBooksTable(_booksFrame);
+
+        _booksFrame.booksTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                LoadSelectedBookInformation();
+            }
+        });
     }
 
     /**
@@ -95,12 +115,14 @@ public class BooksFrame extends javax.swing.JFrame {
         jTextField13 = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jTextField14 = new javax.swing.JTextField();
+        txtInventoryBook = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         btnReloadBooksList = new javax.swing.JButton();
         btnPrintBook = new javax.swing.JButton();
         btnPrintBooksList = new javax.swing.JButton();
+        btnInventory = new javax.swing.JButton();
 
         jRadioButton1.setText("jRadioButton1");
 
@@ -238,7 +260,7 @@ public class BooksFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel5)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Thông tin Sách"));
@@ -394,6 +416,8 @@ public class BooksFrame extends javax.swing.JFrame {
             }
         });
 
+        txtInventoryBook.setText("Chi tiết");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -401,15 +425,19 @@ public class BooksFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel15)
-                    .addComponent(jLabel13))
-                .addGap(25, 25, 25)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField14))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtInventoryBook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel13))
+                        .addGap(25, 25, 25)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jTextField13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                            .addComponent(jTextField12, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField14))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -426,6 +454,8 @@ public class BooksFrame extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtInventoryBook)
                 .addContainerGap())
         );
 
@@ -482,6 +512,13 @@ public class BooksFrame extends javax.swing.JFrame {
             }
         });
 
+        btnInventory.setText("Kiểm kê");
+        btnInventory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventoryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -517,6 +554,8 @@ public class BooksFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnDelete)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnInventory)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnPrintBooksList)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnPrintBook)))
@@ -539,17 +578,21 @@ public class BooksFrame extends javax.swing.JFrame {
                     .addComponent(btnAddBook)
                     .addComponent(btnDelete)
                     .addComponent(btnPrintBooksList)
-                    .addComponent(btnPrintBook))
+                    .addComponent(btnPrintBook)
+                    .addComponent(btnInventory))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -660,6 +703,12 @@ public class BooksFrame extends javax.swing.JFrame {
 //        _bookController.Find(this, txtBookSearch.getText());
     }//GEN-LAST:event_txtBookSearchKeyTyped
 
+    private void btnInventoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryActionPerformed
+        // TODO add your handling code here:
+        InventoryFrame inventoryFrame = new InventoryFrame(_account);
+        inventoryFrame.show();
+    }//GEN-LAST:event_btnInventoryActionPerformed
+
     private static void ClearBookInformation() {
         txtIdCode.setText("");
         txtISBN.setText("");
@@ -678,7 +727,8 @@ public class BooksFrame extends javax.swing.JFrame {
 
     private static void LoadSelectedBookInformation() {
         try {
-            BookViewModel book = new BookViewModel(getSelectedBook());
+//            BookViewModel book = new BookViewModel(getSelectedBook());
+            BookViewModel book = _bookController.GetBookInformations(getSelectedBook());
 
             txtIdCode.setText(book.IdCode);
             txtISBN.setText(book.ISBN);
@@ -693,6 +743,11 @@ public class BooksFrame extends javax.swing.JFrame {
             txtType.setText(book.Type);
             txtMonth.setText(book.PublishMonth);
             txtYear.setText(book.PublishYear);
+
+            jTextField12.setText(book.InventoryInStock);
+            jTextField13.setText(book.InventoryIn);
+            jTextField14.setText(book.InventoryOut);
+
         } catch (Exception e) {
             ClearBookInformation();
         }
@@ -752,6 +807,7 @@ public class BooksFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnAdvanceSearch;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEditBook;
+    private javax.swing.JButton btnInventory;
     private javax.swing.JButton btnPrintBook;
     private javax.swing.JButton btnPrintBooksList;
     private javax.swing.JButton btnReloadBooksList;
@@ -788,6 +844,7 @@ public class BooksFrame extends javax.swing.JFrame {
     private static javax.swing.JTextField txtCreatedBy;
     private static javax.swing.JTextField txtISBN;
     private static javax.swing.JTextField txtIdCode;
+    private javax.swing.JButton txtInventoryBook;
     private static javax.swing.JTextField txtMonth;
     private static javax.swing.JTextField txtName;
     private static javax.swing.JTextField txtPrice;

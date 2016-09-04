@@ -23,8 +23,8 @@ public class InventoryConfigs {
 
     public static final int INVENTORY_TYPE_IN = 100;
     public static final int INVENTORY_TYPE_OUT = 101;
-    public static final int INVENTORY_TYPE_UPDATE = 102;
-    public static final int INVENTORY_TYPE_INIT = 200;
+    public static final int INVENTORY_TYPE_UPDATE = 102;    /// Checkout
+    public static final int INVENTORY_TYPE_INIT = 200;      /// In Stock
 
     public static final String INVENTORY_TYPE_IN_VALUE = "Nhập kho";
     public static final String INVENTORY_TYPE_OUT_VALUE = "Xuất kho";

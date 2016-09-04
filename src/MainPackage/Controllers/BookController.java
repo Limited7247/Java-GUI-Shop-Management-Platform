@@ -11,6 +11,7 @@ import LibData.Models.Book;
 import LibData.Models.Product;
 import LibData.Providers.AccountProvider;
 import LibData.Providers.BookProvider;
+import LibData.Providers.InventoryProvider;
 import LibData.Providers.ProductProvider;
 import static LimitedSolution.Utilities.DateTimeHelper.getCurrentDateString;
 import static LimitedSolution.Utilities.DateTimeHelper.getCurrentDateTimeString;
@@ -47,6 +48,7 @@ public class BookController {
 
     private BookProvider _bookProvider = new BookProvider();
     private AccountProvider _accountProvider = new AccountProvider();
+    private InventoryProvider _inventoryProvider = new InventoryProvider();
 
     public void ShowBooksTable(BooksFrame booksFrame) {
         booksFrame.booksTable.setModel(new BookTableModel(_bookProvider.getAll()));
@@ -175,6 +177,20 @@ public class BookController {
                 "Tìm kiếm Sách",
                 JOptionPane.INFORMATION_MESSAGE
         );
+    }
+
+    public BookViewModel GetBookInformations(Book selectedBook) {
+        BookViewModel model = new BookViewModel(selectedBook);
+
+        Integer inStock = _inventoryProvider.getInStockByProductId(selectedBook.getProductId());
+        Integer in = _inventoryProvider.getInQuantitiesByProductId(selectedBook.getProductId());
+        Integer out = _inventoryProvider.getOutQuantitiesByProductId(selectedBook.getProductId());
+
+        model.InventoryInStock = inStock != null ? inStock + "" : "0";
+        model.InventoryIn = in != null ? in + "" : "0";
+        model.InventoryOut = out != null ? out + "" : "0";
+
+        return model;
     }
 
     public static class PrintRunField {

@@ -5,10 +5,17 @@
  */
 package MainPackage.Views.Inventory;
 
+import LibData.Models.Account;
+import LibData.Models.Inventory;
 import LibData.Providers.InventoryProvider;
 import MainPackage.Controllers.InventoryController;
 import MainPackage.Models.Inventory.InventoryTableModel;
+import MainPackage.Models.Inventory.InventoryViewModel;
+import MainPackage.Views.Book.BooksFrame;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -17,15 +24,48 @@ import javax.swing.UIManager;
 public class InventoryFrame extends javax.swing.JFrame {
 
     private static InventoryFrame _inventoryFrame;
+
     private static InventoryController _inventoryController = new InventoryController();
+
+    private static Account _account;
+
+    private static Inventory getSelectedInventory() {
+        return ((InventoryTableModel) _inventoryFrame.inventoriesTable.getModel()).list.get(
+                getSelectedRow()
+        );
+    }
+
+    private static int getSelectedRow() {
+        return _inventoryFrame.inventoriesTable.getSelectedRow();
+    }
 
     /**
      * Creates new form InventoryFrame
      */
     public InventoryFrame() {
         initComponents();
+
     }
 
+    public InventoryFrame(Account _account) {
+        initComponents();
+        this._account = _account;
+
+        _inventoryFrame = this;
+        _inventoryFrame.setVisible(true);
+
+        _inventoryController.ShowInventoryTable(_inventoryFrame);
+        _inventoryFrame.inventoriesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                LoadSelectedInventoryInformation();
+            }
+        });
+    }
+
+//    public InventoryFrame(BooksFrame _booksFrame) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,8 +77,40 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         inventoriesTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        txtIdCode = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        txtPrice = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        txtProductName = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtType = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        txtInventoryInEnter = new javax.swing.JTextField();
+        btnInventoryIn = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        btnInventoryOut = new javax.swing.JButton();
+        txtInventoryOutEnter = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        txtInventoryCheckoutEnter = new javax.swing.JTextField();
+        btnInventoryCheckout = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        txtInventoryInStock = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        txtInventoryIn = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        txtInventoryOut = new javax.swing.JTextField();
+        txtBookSearch = new javax.swing.JTextField();
+        btnSimplySearch = new javax.swing.JButton();
+        btnAdvanceSearch = new javax.swing.JButton();
+        btnReloadBooksList = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         inventoriesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -53,25 +125,486 @@ public class InventoryFrame extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(inventoriesTable);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Thông tin Sản phẩm"));
+
+        txtIdCode.setEditable(false);
+        txtIdCode.setDisabledTextColor(java.awt.Color.black);
+        txtIdCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdCodeActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Mã Sản phẩm");
+
+        txtPrice.setEditable(false);
+        txtPrice.setDisabledTextColor(java.awt.Color.black);
+        txtPrice.setEnabled(false);
+
+        jLabel11.setText("Giá tiền");
+
+        txtProductName.setText("Tên Sản phẩm");
+
+        txtName.setEditable(false);
+        txtName.setDisabledTextColor(java.awt.Color.black);
+        txtName.setEnabled(false);
+        txtName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNameActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Phân loại");
+
+        txtType.setEditable(false);
+        txtType.setDisabledTextColor(java.awt.Color.black);
+        txtType.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtProductName)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel1))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtIdCode, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                        .addComponent(txtType)))
+                .addContainerGap(26, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel11)
+                        .addComponent(txtIdCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtProductName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Nhập kho"));
+
+        jLabel2.setText("Số lượng");
+
+        txtInventoryInEnter.setDisabledTextColor(java.awt.Color.black);
+        txtInventoryInEnter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInventoryInEnterActionPerformed(evt);
+            }
+        });
+
+        btnInventoryIn.setText("NHẬP KHO");
+        btnInventoryIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventoryInActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnInventoryIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtInventoryInEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtInventoryInEnter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInventoryIn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Xuất kho"));
+
+        btnInventoryOut.setText("XUẤT KHO");
+        btnInventoryOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventoryOutActionPerformed(evt);
+            }
+        });
+
+        txtInventoryOutEnter.setDisabledTextColor(java.awt.Color.black);
+        txtInventoryOutEnter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInventoryOutEnterActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Số lượng");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnInventoryOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtInventoryOutEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtInventoryOutEnter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInventoryOut)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Kiểm kê"));
+
+        jLabel4.setText("Số lượng");
+
+        txtInventoryCheckoutEnter.setDisabledTextColor(java.awt.Color.black);
+        txtInventoryCheckoutEnter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInventoryCheckoutEnterActionPerformed(evt);
+            }
+        });
+
+        btnInventoryCheckout.setText("CẬP NHẬT");
+        btnInventoryCheckout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventoryCheckoutActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnInventoryCheckout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtInventoryCheckoutEnter, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtInventoryCheckoutEnter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInventoryCheckout)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Kiểm kê"));
+
+        txtInventoryInStock.setEditable(false);
+        txtInventoryInStock.setDisabledTextColor(java.awt.Color.black);
+        txtInventoryInStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInventoryInStockActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Tồn kho");
+
+        jLabel14.setText("Nhập vào");
+
+        txtInventoryIn.setEditable(false);
+        txtInventoryIn.setDisabledTextColor(java.awt.Color.black);
+        txtInventoryIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInventoryInActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setText("Xuất ra");
+
+        txtInventoryOut.setEditable(false);
+        txtInventoryOut.setDisabledTextColor(java.awt.Color.black);
+        txtInventoryOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtInventoryOutActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel13))
+                .addGap(25, 25, 25)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtInventoryIn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                    .addComponent(txtInventoryInStock, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtInventoryOut))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtInventoryInStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtInventoryIn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtInventoryOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
+                .addContainerGap())
+        );
+
+        txtBookSearch.setPreferredSize(new java.awt.Dimension(6, 23));
+        txtBookSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBookSearchActionPerformed(evt);
+            }
+        });
+        txtBookSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBookSearchKeyTyped(evt);
+            }
+        });
+
+        btnSimplySearch.setText("Tìm kiếm");
+        btnSimplySearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimplySearchActionPerformed(evt);
+            }
+        });
+
+        btnAdvanceSearch.setText("Tìm kiếm nâng cao");
+
+        btnReloadBooksList.setText("Tải lại danh sách");
+        btnReloadBooksList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReloadBooksListActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 3, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtBookSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSimplySearch)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAdvanceSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnReloadBooksList)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAdvanceSearch)
+                    .addComponent(btnReloadBooksList)
+                    .addComponent(btnSimplySearch)
+                    .addComponent(txtBookSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(194, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtIdCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdCodeActionPerformed
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void txtInventoryInEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryInEnterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtInventoryInEnterActionPerformed
+
+    private void txtInventoryOutEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryOutEnterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtInventoryOutEnterActionPerformed
+
+    private void txtInventoryCheckoutEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryCheckoutEnterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtInventoryCheckoutEnterActionPerformed
+
+    private void txtInventoryInStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryInStockActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtInventoryInStockActionPerformed
+
+    private void txtInventoryInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryInActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtInventoryInActionPerformed
+
+    private void txtInventoryOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtInventoryOutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtInventoryOutActionPerformed
+
+    private void btnInventoryInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryInActionPerformed
+        // TODO add your handling code here:
+        int selected = getSelectedRow();
+        _inventoryController.InventoryIn(this, getSelectedInventory(), txtInventoryInEnter.getText(), _account);
+        ReSelectedRow(selected);
+    }//GEN-LAST:event_btnInventoryInActionPerformed
+
+    private void ReSelectedRow(int selected) {
+        _inventoryController.ShowInventoryTable(this);
+        txtBookSearch.setText("");
+        _inventoryFrame.inventoriesTable.setRowSelectionInterval(selected, selected);
+        ClearInventoryEnterFields();
+    }
+
+    private void btnInventoryOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryOutActionPerformed
+        // TODO add your handling code here:
+        int selected = getSelectedRow();
+        _inventoryController.InventoryOut(this, getSelectedInventory(), txtInventoryOutEnter.getText(), _account);
+        ReSelectedRow(selected);
+    }//GEN-LAST:event_btnInventoryOutActionPerformed
+
+    private void txtBookSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBookSearchActionPerformed
+        // TODO add your handling code here:
+//        _bookController.Find(this, txtBookSearch.getText());
+    }//GEN-LAST:event_txtBookSearchActionPerformed
+
+    private void txtBookSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBookSearchKeyTyped
+        // TODO add your handling code here:
+        //        _bookController.Find(this, txtBookSearch.getText());
+    }//GEN-LAST:event_txtBookSearchKeyTyped
+
+    private void btnSimplySearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimplySearchActionPerformed
+        // TODO add your handling code here:
+        _inventoryController.Find(this, txtBookSearch.getText());
+    }//GEN-LAST:event_btnSimplySearchActionPerformed
+
+    private void btnReloadBooksListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReloadBooksListActionPerformed
+        // TODO add your handling code here:
+        txtBookSearch.setText("");
+        _inventoryController.Find(this, txtBookSearch.getText());
+    }//GEN-LAST:event_btnReloadBooksListActionPerformed
+
+    private void btnInventoryCheckoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryCheckoutActionPerformed
+        // TODO add your handling code here:
+        int selected = getSelectedRow();
+        _inventoryController.InventoryCheckout(this, getSelectedInventory(), txtInventoryCheckoutEnter.getText(), _account);
+        ReSelectedRow(selected);
+    }//GEN-LAST:event_btnInventoryCheckoutActionPerformed
+
+    public static void ClearInventoryEnterFields() {
+        txtInventoryInEnter.setText("");
+        txtInventoryOutEnter.setText("");
+        txtInventoryCheckoutEnter.setText("");
+    }
+
+    public static void ClearInventoryInformation() {
+        txtIdCode.setText("");
+        txtName.setText("");
+        txtPrice.setText("");
+        txtType.setText("");
+
+        txtInventoryInStock.setText("");
+        txtInventoryIn.setText("");
+        txtInventoryOut.setText("");
+    }
+
+    public static void LoadSelectedInventoryInformation() {
+        try {
+            InventoryViewModel model = _inventoryController.GetInventoryInformations(getSelectedInventory());
+
+            txtIdCode.setText(model.IdCode);
+            txtName.setText(model.Name);
+            txtPrice.setText(model.Price);
+            txtType.setText(model.Type);
+
+            txtInventoryInStock.setText(model.InStock);
+            txtInventoryIn.setText(model.In);
+            txtInventoryOut.setText(model.Out);
+        } catch (Exception e) {
+            ClearInventoryInformation();
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -108,12 +641,50 @@ public class InventoryFrame extends javax.swing.JFrame {
                 _inventoryFrame.setVisible(true);
 
                 _inventoryController.ShowInventoryTable(_inventoryFrame);
+                _inventoryFrame.inventoriesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        LoadSelectedInventoryInformation();
+                    }
+                });
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdvanceSearch;
+    private javax.swing.JButton btnInventoryCheckout;
+    private javax.swing.JButton btnInventoryIn;
+    private javax.swing.JButton btnInventoryOut;
+    private javax.swing.JButton btnReloadBooksList;
+    private javax.swing.JButton btnSimplySearch;
     public javax.swing.JTable inventoriesTable;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtBookSearch;
+    private static javax.swing.JTextField txtIdCode;
+    private static javax.swing.JTextField txtInventoryCheckoutEnter;
+    private static javax.swing.JTextField txtInventoryIn;
+    private static javax.swing.JTextField txtInventoryInEnter;
+    private static javax.swing.JTextField txtInventoryInStock;
+    private static javax.swing.JTextField txtInventoryOut;
+    private static javax.swing.JTextField txtInventoryOutEnter;
+    private static javax.swing.JTextField txtName;
+    private static javax.swing.JTextField txtPrice;
+    private javax.swing.JLabel txtProductName;
+    private static javax.swing.JTextField txtType;
     // End of variables declaration//GEN-END:variables
 }
