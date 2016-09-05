@@ -8,6 +8,6 @@
 ### 1. Microsoft SQL JDBC
 ### 2. Java Persistence API
 ### 3. JinQ
-### 4. LimitedSolution for 
+### 4. LimitedSolution for Java
 
 ## Developing... =))
