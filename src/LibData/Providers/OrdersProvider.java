@@ -88,4 +88,8 @@ public class OrdersProvider implements IProvider {
             return null;
         }
     }
+
+    public List<Orders> Find(String text) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

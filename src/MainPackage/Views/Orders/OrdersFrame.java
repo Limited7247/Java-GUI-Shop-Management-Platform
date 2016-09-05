@@ -5,17 +5,112 @@
  */
 package MainPackage.Views.Orders;
 
+import LibData.Models.Account;
+import LibData.Models.Orders;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import MainPackage.Controllers.OrderController;
+import MainPackage.Models.Orders.OrdersTableModel;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtDetails;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtDiscountPrice;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtGuestAddress;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtGuestEmail;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtGuestName;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtGuestPhone;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtPaidPrice;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtTotalPrice;
+import static MainPackage.Views.Orders.OrderInformationsFrame.txtVATPrice;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.CurrencyHelper.IntToVND;
+import static LimitedSolution.Utilities.DateTimeHelper.getDateTimeString;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Limited
  */
 public class OrdersFrame extends javax.swing.JFrame {
 
+    private Account _account;
+    private OrderController _orderController = new OrderController();
+
     /**
      * Creates new form OrdersFrame
      */
     public OrdersFrame() {
         initComponents();
+    }
+
+    public OrdersFrame(Account _account) {
+        this();
+        this._account = _account;
+
+        _orderController.ShowOrdersTable(this);
+
+        this.ordersTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                LoadOrdersInformation();
+            }
+        });
+    }
+
+    private OrdersTableModel getOrdersTableModel() {
+        return ((OrdersTableModel) this.ordersTable.getModel());
+    }
+
+    private Orders getSelectedOrder() {
+        return getOrdersTableModel().list.get(
+                this.ordersTable.getSelectedRow()
+        );
+    }
+
+    private void ClearOrderInformation() {
+        txtIdCode.setText("");
+        txtCreatedBy.setText("");
+        txtCreateTime.setText("");
+
+        txtTotalPrice.setText("");
+        txtVATPrice.setText("");
+        txtPaidPrice.setText("");
+        txtDiscountPrice.setText("");
+
+        txtGuestName.setText("");
+        txtGuestAddress.setText("");
+        txtGuestEmail.setText("");
+        txtGuestPhone.setText("");
+        txtDetails.setText("");
+    }
+
+    private void LoadOrdersInformation() {
+        try {
+            Orders _orders = getSelectedOrder();
+
+            txtIdCode.setText(_orders.getIdCode());
+            txtCreatedBy.setText(_orders.getCreateBy().getUsername());
+            txtCreateTime.setText(getDateTimeString(_orders.getCreateTime()));
+
+            txtTotalPrice.setText(IntToVND(_orders.getTotalPrice()));
+            txtDiscountPrice.setText(IntToVND(_orders.getDiscount()));
+            txtVATPrice.setText(IntToVND(_orders.getVATPrice()));
+            txtPaidPrice.setText(IntToVND(_orders.getPaidPrice()));
+
+            txtGuestName.setText(_orders.getGuestName());
+            txtGuestAddress.setText(_orders.getGuestAddress());
+            txtGuestEmail.setText(_orders.getGuestEmail());
+            txtGuestPhone.setText(_orders.getGuestPhone());
+
+            txtDetails.setText(_orders.getDetails());
+
+        } catch (Exception e) {
+            ClearOrderInformation();
+        }
     }
 
     /**
@@ -32,9 +127,7 @@ public class OrdersFrame extends javax.swing.JFrame {
         txtBookSearch = new javax.swing.JTextField();
         btnSimplySearch = new javax.swing.JButton();
         btnReloadBooksList = new javax.swing.JButton();
-        btnEditBook = new javax.swing.JButton();
         btnPrintBooksList = new javax.swing.JButton();
-        btnPrintBook = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         txtTotalPrice = new javax.swing.JTextField();
@@ -45,6 +138,12 @@ public class OrdersFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         txtPaidPrice = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        txtIdCode = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        txtCreatedBy = new javax.swing.JTextField();
+        txtCreateTime = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         txtGuestName = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
@@ -57,8 +156,10 @@ public class OrdersFrame extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtDetails = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        btnEditBook = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         ordersTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,24 +200,10 @@ public class OrdersFrame extends javax.swing.JFrame {
             }
         });
 
-        btnEditBook.setText("Thông tin chi tiết");
-        btnEditBook.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditBookActionPerformed(evt);
-            }
-        });
-
         btnPrintBooksList.setText("In Danh sách");
         btnPrintBooksList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPrintBooksListActionPerformed(evt);
-            }
-        });
-
-        btnPrintBook.setText("In Hóa đơn");
-        btnPrintBook.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrintBookActionPerformed(evt);
             }
         });
 
@@ -150,6 +237,24 @@ public class OrdersFrame extends javax.swing.JFrame {
         txtPaidPrice.setDisabledTextColor(java.awt.Color.black);
         txtPaidPrice.setEnabled(false);
 
+        jLabel14.setText("Mã Hóa đơn");
+
+        txtIdCode.setEditable(false);
+        txtIdCode.setDisabledTextColor(java.awt.Color.black);
+        txtIdCode.setEnabled(false);
+
+        jLabel15.setText("Người lập");
+
+        txtCreatedBy.setEditable(false);
+        txtCreatedBy.setDisabledTextColor(java.awt.Color.black);
+        txtCreatedBy.setEnabled(false);
+
+        txtCreateTime.setEditable(false);
+        txtCreateTime.setDisabledTextColor(java.awt.Color.black);
+        txtCreateTime.setEnabled(false);
+
+        jLabel16.setText("Thời gian lập");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -161,24 +266,46 @@ public class OrdersFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(jLabel9))
-                        .addGap(18, 18, 18)
+                        .addGap(21, 21, 21)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPaidPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-                            .addComponent(txtDiscountPrice)))
+                            .addComponent(txtDiscountPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                            .addComponent(txtPaidPrice)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
                             .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTotalPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-                            .addComponent(txtVATPrice))))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTotalPrice)
+                            .addComponent(txtVATPrice)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel16))
+                        .addGap(25, 25, 25)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCreateTime)
+                            .addComponent(txtIdCode)
+                            .addComponent(txtCreatedBy))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtIdCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCreatedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCreateTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
@@ -237,7 +364,7 @@ public class OrdersFrame extends javax.swing.JFrame {
                     .addComponent(jLabel13))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtGuestName, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                    .addComponent(txtGuestName)
                     .addComponent(txtGuestAddress)
                     .addComponent(txtGuestPhone)
                     .addComponent(txtGuestEmail))
@@ -281,7 +408,7 @@ public class OrdersFrame extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -292,30 +419,55 @@ public class OrdersFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton1.setText("In Hóa đơn");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        btnEditBook.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnEditBook.setText("Thông tin chi tiết");
+        btnEditBook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditBookActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEditBook)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1)
+                            .addComponent(btnEditBook, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -326,20 +478,16 @@ public class OrdersFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 681, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtBookSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnSimplySearch)
-                                .addGap(254, 254, 254)
-                                .addComponent(btnReloadBooksList))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnEditBook)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(149, 149, 149)
                                 .addComponent(btnPrintBooksList)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnPrintBook)))
+                                .addComponent(btnReloadBooksList)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -351,15 +499,11 @@ public class OrdersFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReloadBooksList)
                     .addComponent(btnSimplySearch)
-                    .addComponent(txtBookSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtBookSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPrintBooksList))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnEditBook)
-                    .addComponent(btnPrintBooksList)
-                    .addComponent(btnPrintBook))
-                .addGap(18, 18, 18)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -389,37 +533,27 @@ public class OrdersFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReloadBooksListActionPerformed
 
     private void btnEditBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditBookActionPerformed
-//        // TODO add your handling code here:
-//        try {
-//            _bookController.ViewBook(this, getSelectedBook(), _account);
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(
-//                null,
-//                "Vui lòng chọn một sách",
-//                "Xem thông tin sách",
-//                JOptionPane.WARNING_MESSAGE
-//            );
-//        }
+        OrderInformationsFrame orderFrame = new OrderInformationsFrame(getSelectedOrder(), _account);
+        orderFrame.show();
     }//GEN-LAST:event_btnEditBookActionPerformed
 
     private void btnPrintBooksListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintBooksListActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnPrintBooksListActionPerformed
 
-    private void btnPrintBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintBookActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-//        try {
-//            _bookController.PrintBook(_booksFrame, getSelectedBook(), _account);
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(
-//                null,
-//                "Vui lòng chọn một sách",
-//                "In thông tin sách",
-//                JOptionPane.WARNING_MESSAGE
-//            );
-//        }
-    }//GEN-LAST:event_btnPrintBookActionPerformed
+        try {
+            _orderController.Print(this, getSelectedOrder(), _account);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Vui lòng chọn một hóa đơn", 
+                    "In hóa đơn", 
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -458,14 +592,17 @@ public class OrdersFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditBook;
-    private javax.swing.JButton btnPrintBook;
     private javax.swing.JButton btnPrintBooksList;
     private javax.swing.JButton btnReloadBooksList;
     private javax.swing.JButton btnSimplySearch;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -478,12 +615,15 @@ public class OrdersFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTable ordersTable;
     private javax.swing.JTextField txtBookSearch;
+    public static javax.swing.JTextField txtCreateTime;
+    public static javax.swing.JTextField txtCreatedBy;
     public static javax.swing.JTextArea txtDetails;
     public static javax.swing.JTextField txtDiscountPrice;
     public static javax.swing.JTextField txtGuestAddress;
     public static javax.swing.JTextField txtGuestEmail;
     public static javax.swing.JTextField txtGuestName;
     public static javax.swing.JTextField txtGuestPhone;
+    public static javax.swing.JTextField txtIdCode;
     public static javax.swing.JTextField txtPaidPrice;
     public static javax.swing.JTextField txtTotalPrice;
     public static javax.swing.JTextField txtVATPrice;

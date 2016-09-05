@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackage.Views;
+package MainPackage.Views.Account;
 
 import LibData.Models.Account;
 import LibData.Providers.AccountProvider;
@@ -24,25 +24,27 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Limited
  */
-public class MainFrame extends javax.swing.JFrame {
+public class AccountsFrame extends javax.swing.JFrame {
 
     private static Optional<Account> _account = null;
     private static MainController _mainController = new MainController();
     private static AccountController _accountController = new AccountController();
     
-    private static MainFrame frmMain = new MainFrame();
+//    private static AccountsFrame frmMain = new AccountsFrame();
 
 //    private static final GlobalValues _globalValues = GlobalValues.getInstance();
     /**
      * Creates new form MainFrame
      */
-    public MainFrame() {
+    public AccountsFrame() {
         initComponents();
-        _account = null;
-        _accountController = new AccountController();
+//        _account = null;
+//        _accountController = new AccountController();
         
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize((int) dim.getWidth(), (int) dim.getHeight());
+        _mainController.ShowAccountTable(this);
+        
+//        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+//        this.setSize((int) dim.getWidth(), (int) dim.getHeight());
     }
 
     /**
@@ -57,9 +59,11 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableAccount = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+        btnChangePassword = new javax.swing.JButton();
+        btnChangePassword1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Danh sách tài khoản");
         setBackground(new java.awt.Color(102, 102, 255));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -89,11 +93,19 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        btnDelete.setText("Xóa");
-        btnDelete.setActionCommand("btnDelete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnChangePassword.setText("Đổi mật khẩu");
+        btnChangePassword.setActionCommand("btnDelete");
+        btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnChangePasswordActionPerformed(evt);
+            }
+        });
+
+        btnChangePassword1.setText("Đổi mật khẩu về \"123456\"");
+        btnChangePassword1.setActionCommand("btnDelete");
+        btnChangePassword1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangePassword1ActionPerformed(evt);
             }
         });
 
@@ -104,11 +116,14 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd)
-                        .addGap(10, 10, 10)
-                        .addComponent(btnDelete)))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnChangePassword)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnChangePassword1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
@@ -116,11 +131,12 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
-                    .addComponent(btnDelete))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(btnChangePassword)
+                    .addComponent(btnChangePassword1))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
@@ -128,8 +144,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        _mainController.Exit();
-
+//        _mainController.Exit();
+        this.dispose();
     }//GEN-LAST:event_formWindowClosing
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -137,18 +153,17 @@ public class MainFrame extends javax.swing.JFrame {
         AddAccountDialog frmAddAccount = new AddAccountDialog(this, rootPaneCheckingEnabled);
         frmAddAccount.show();
         //_mainController.;
-        _mainController.UpdateAccountTable(frmMain);
+        _mainController.UpdateAccountTable(this);
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
         // TODO add your handling code here:
-        _accountController.DelAccount(
-                ((AccountTableModel)this.tableAccount.getModel())
-                        .list.get(
-                                this.tableAccount.getSelectedRow()));
-//        ((AccountTableModel)this.tableAccount.getModel()).list.remove(this.tableAccount.getSelectedRow());
-        _mainController.UpdateAccountTable(frmMain);
-    }//GEN-LAST:event_btnDeleteActionPerformed
+//        _mainController.ChangePassword(this, get)
+    }//GEN-LAST:event_btnChangePasswordActionPerformed
+
+    private void btnChangePassword1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePassword1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnChangePassword1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -168,39 +183,41 @@ public class MainFrame extends javax.swing.JFrame {
 //            }
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AccountsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AccountsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AccountsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AccountsFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                _mainController.Start();
-                
-                if (_account == null) {
-                    _account = Optional.of(new Account());
-                }
-
-                while (!_accountController.CheckAccount(_account.get())) {
-                    _accountController.Login(frmMain, _account);
-                }
-
-                frmMain.setVisible(true);
-
-                _mainController.ShowAccountTable(frmMain);
+//                _mainController.Start();
+//                
+//                if (_account == null) {
+//                    _account = Optional.of(new Account());
+//                }
+//
+//                while (!_accountController.CheckAccount(_account.get())) {
+//                    _accountController.Login(frmMain, _account);
+//                }
+//
+//                frmMain.setVisible(true);
+//
+//                _mainController.ShowAccountTable(frmMain);
             }            
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnChangePassword;
+    private javax.swing.JButton btnChangePassword1;
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTable tableAccount;
     // End of variables declaration//GEN-END:variables

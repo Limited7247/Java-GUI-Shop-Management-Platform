@@ -16,6 +16,7 @@ import MainPackage.Controllers.BookController;
 import MainPackage.Controllers.OrderController;
 import MainPackage.Models.Book.BookTableModel;
 import MainPackage.Models.Orders.NewOrderViewModel;
+import MainPackage.Views.Account.AccountsFrame;
 import MainPackage.Views.Book.BooksFrame;
 import MainPackage.Views.Inventory.InventoryFrame;
 import java.util.ArrayList;
@@ -41,7 +42,9 @@ public class NewOrderFrame extends javax.swing.JFrame {
     
     private BooksFrame _booksFrame;
     
-//    private AccountFrame
+    private OrdersFrame _ordersFrame;
+    
+    private AccountsFrame _accountsFrame;
 
     /**
      * Creates new form NewOrderFrame
@@ -257,7 +260,7 @@ public class NewOrderFrame extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hóa đơn mới");
         setResizable(false);
 
@@ -314,7 +317,7 @@ public class NewOrderFrame extends javax.swing.JFrame {
 
         txtDiscountWarning.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         txtDiscountWarning.setForeground(new java.awt.Color(255, 0, 0));
-        txtDiscountWarning.setText("Vui lòng nhập Tiền Khuyến mại đúng định dạng");
+        txtDiscountWarning.setText("Vui lòng nhập Khuyến mại đúng định dạng");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 0, 0));
@@ -339,11 +342,11 @@ public class NewOrderFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
                             .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtTotalPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-                            .addComponent(txtVATPrice)))
-                    .addComponent(txtDiscountWarning, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                        .addGap(36, 36, 36)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtVATPrice)
+                            .addComponent(txtTotalPrice)))
+                    .addComponent(txtDiscountWarning, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -470,10 +473,10 @@ public class NewOrderFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnMakeOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnMakeOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -847,6 +850,11 @@ public class NewOrderFrame extends javax.swing.JFrame {
         jButton3.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\order.png")); // NOI18N
         jButton3.setToolTipText("Hóa đơn");
         jButton3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hóa đơn", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_BOTTOM, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(255, 255, 255));
         jButton4.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\Accounts.png")); // NOI18N
@@ -1079,7 +1087,23 @@ public class NewOrderFrame extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        if (_accountsFrame == null)
+        {
+            _accountsFrame = new AccountsFrame();
+        }
+        
+        _accountsFrame.show();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        if (_ordersFrame == null)
+        {
+            _ordersFrame = new OrdersFrame(_account);
+        }
+        
+        _ordersFrame.show();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void DiscountPriceValueChanged() {
         Integer discountPrice = null;

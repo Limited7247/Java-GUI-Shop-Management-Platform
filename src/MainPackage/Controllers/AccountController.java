@@ -14,7 +14,8 @@ import MainPackage.Models.Account.AddAccountModel;
 import MainPackage.Models.Account.LoginViewModel;
 import MainPackage.Views.Account.LoginDialog;
 import MainPackage.Views.Account.AddAccountDialog;
-import MainPackage.Views.MainFrame;
+import MainPackage.Views.Account.AccountsFrame;
+import java.awt.Frame;
 import static java.lang.System.exit;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +56,7 @@ public class AccountController {
         if (account.getUsername() == null || account.getUsername().isEmpty()) {
             return false;
         }
-        if (account.getPasswordHash() == null 
+        if (account.getPasswordHash() == null
                 || account.getPasswordHash().isEmpty()
                 || account.getPasswordHash().equals(SecurityHelper.MD5EmptyString)) {
             return false;
@@ -78,7 +79,7 @@ public class AccountController {
             warning.setString("Vui lòng nhập tên tài khoản" + '\n');
             key = false;
         }
-        if (account.getPasswordHash() == null 
+        if (account.getPasswordHash() == null
                 || account.getPasswordHash().isEmpty()
                 || account.getPasswordHash().equals(SecurityHelper.MD5EmptyString)) {
             warning.appendString("Vui lòng nhập mật khẩu" + '\n');
@@ -110,7 +111,7 @@ public class AccountController {
 
         return _accountProvider.CheckByUsername(account.getUsername());
     }
-    
+
     public boolean HasPassword(Account account) {
         if (account == null) {
             return false;
@@ -122,7 +123,7 @@ public class AccountController {
 
         return true;
     }
-    
+
     public boolean HasEmail(Account account) {
         if (account == null) {
             return false;
@@ -135,7 +136,20 @@ public class AccountController {
         return _accountProvider.CheckByEmail(account.getEmail());
     }
 
-    public void Login(MainFrame mainFrame, Optional<Account> account) {
+    public void Login(AccountsFrame mainFrame, Optional<Account> account) {
+        if (account != null) {
+            LoginDialog frmLogin = new LoginDialog(mainFrame, true, account);
+            frmLogin.show();
+        }
+
+//        JOptionPane.showMessageDialog(
+//                null,
+//                "Lỗi: Chưa khởi tạo account",
+//                "Lỗi đăng nhập",
+//                JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void Login(Frame mainFrame, Optional<Account> account) {
         if (account != null) {
             LoginDialog frmLogin = new LoginDialog(mainFrame, true, account);
             frmLogin.show();
@@ -162,8 +176,8 @@ public class AccountController {
             return false;
 
         }
-        
-        AccountFactory.transfer(model, account.get());
+
+        AccountFactory.transfer(_accountProvider.getByUsername(model.Username), account.get());
 
 //        JOptionPane.showMessageDialog(
 //                null,
@@ -204,8 +218,7 @@ public class AccountController {
                             "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
                     return true;
-                }
-                else {
+                } else {
                     JOptionPane.showMessageDialog(
                             null,
                             "Vui lòng nhập mật khẩu",
@@ -213,8 +226,7 @@ public class AccountController {
                             JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(
                         null,
                         "Đã có email " + newaccount.getEmail(),
@@ -223,8 +235,7 @@ public class AccountController {
                 return false;
             }
 
-        }
-        else {
+        } else {
 
             JOptionPane.showMessageDialog(
                     null,
@@ -234,22 +245,20 @@ public class AccountController {
             return false;
         }
     }
-    
+
     public void DelAccount(Account delaccount) {
-       
-        if (this._accountProvider.Delete(delaccount))
-        {
+
+        if (this._accountProvider.Delete(delaccount)) {
             JOptionPane.showMessageDialog(
-                    null, 
-                    "Đã xóa tài khoản ", 
-                    "Thông báo", 
+                    null,
+                    "Đã xóa tài khoản ",
+                    "Thông báo",
                     JOptionPane.INFORMATION_MESSAGE);
-        }
-        else {
+        } else {
             JOptionPane.showMessageDialog(
-                    null, 
-                    "Không có tài khoản ", 
-                    "Lỗi", 
+                    null,
+                    "Không có tài khoản ",
+                    "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -117,4 +117,12 @@ public class AccountProvider {
             return false;
         }
     }
+
+    public Account getByUsername(String Username) {
+        try {
+            return getJinqAccounts().where(m -> m.getUsername().equals(Username)).findOne().get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

@@ -12,6 +12,7 @@ import MainPackage.Controllers.InventoryController;
 import MainPackage.Models.Inventory.InventoryTableModel;
 import MainPackage.Models.Inventory.InventoryViewModel;
 import MainPackage.Views.Book.BooksFrame;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
@@ -53,7 +54,7 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         _inventoryFrame = this;
         _inventoryFrame.setVisible(true);
-        
+
         _inventoryFrame.btnAdvanceSearch.setVisible(false);
 
         _inventoryController.ShowInventoryTable(_inventoryFrame);
@@ -456,9 +457,19 @@ public class InventoryFrame extends javax.swing.JFrame {
 
     private void btnInventoryInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryInActionPerformed
         // TODO add your handling code here:
-        int selected = getSelectedRow();
-        _inventoryController.InventoryIn(this, getSelectedInventory(), txtInventoryInEnter.getText(), _account);
-        ReSelectedRow(selected);
+        try {
+            int selected = getSelectedRow();
+            _inventoryController.InventoryIn(this, getSelectedInventory(), txtInventoryInEnter.getText(), _account);
+            ReSelectedRow(selected);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn một đơn kiểm kê",
+                    "Nhập kho",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+
     }//GEN-LAST:event_btnInventoryInActionPerformed
 
     private void ReSelectedRow(int selected) {
@@ -470,9 +481,19 @@ public class InventoryFrame extends javax.swing.JFrame {
 
     private void btnInventoryOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryOutActionPerformed
         // TODO add your handling code here:
-        int selected = getSelectedRow();
-        _inventoryController.InventoryOut(this, getSelectedInventory(), txtInventoryOutEnter.getText(), _account);
-        ReSelectedRow(selected);
+        try {
+            int selected = getSelectedRow();
+            _inventoryController.InventoryOut(this, getSelectedInventory(), txtInventoryOutEnter.getText(), _account);
+            ReSelectedRow(selected);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn một đơn kiểm kê",
+                    "Xuất kho",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+
     }//GEN-LAST:event_btnInventoryOutActionPerformed
 
     private void txtBookSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBookSearchActionPerformed
@@ -498,9 +519,18 @@ public class InventoryFrame extends javax.swing.JFrame {
 
     private void btnInventoryCheckoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryCheckoutActionPerformed
         // TODO add your handling code here:
-        int selected = getSelectedRow();
-        _inventoryController.InventoryCheckout(this, getSelectedInventory(), txtInventoryCheckoutEnter.getText(), _account);
-        ReSelectedRow(selected);
+        try {
+            int selected = getSelectedRow();
+            _inventoryController.InventoryCheckout(this, getSelectedInventory(), txtInventoryCheckoutEnter.getText(), _account);
+            ReSelectedRow(selected);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn một đơn kiểm kê",
+                    "Kiểm kê",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
     }//GEN-LAST:event_btnInventoryCheckoutActionPerformed
 
     public static void ClearInventoryEnterFields() {

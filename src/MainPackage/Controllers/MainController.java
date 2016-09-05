@@ -11,7 +11,8 @@ import LibData.Providers.AccountProvider;
 import LimitedSolution.Utilities.DateTimeHelper;
 import static LimitedSolution.Utilities.JTableHelper.TableColumnAdjuster;
 import MainPackage.Models.Account.AccountTableModel;
-import MainPackage.Views.MainFrame;
+import MainPackage.Views.Book.BooksFrame;
+import MainPackage.Views.Account.AccountsFrame;
 import java.awt.Component;
 import static java.lang.System.exit;
 import java.util.Date;
@@ -19,8 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import static LimitedSolution.Utilities.JTableHelper.TableColumnAdjuster;
 
 /**
  *
@@ -31,6 +34,18 @@ public class MainController {
     private AccountProvider _accountProvider = new AccountProvider();
 
     public void Start() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 //        System.out.println(DateTimeHelper.getCurrentDateString());
 //        System.out.println(DateTimeHelper.getCurrentTimeString());
 //        System.out.println(DateTimeHelper.getCurrentDateTimeString());
@@ -56,17 +71,16 @@ public class MainController {
         }
     }
 
-    public void ShowAccountTable(MainFrame frmMain) {
+    public void ShowAccountTable(AccountsFrame frmMain) {
         frmMain.tableAccount.setModel(new AccountTableModel(_accountProvider.getAll()));
 
         TableColumnAdjuster(frmMain.tableAccount);
     }
 
-    public void UpdateAccountTable(MainFrame frmMain) {
+    public void UpdateAccountTable(AccountsFrame frmMain) {
         ((AccountTableModel) frmMain.tableAccount.getModel()).fireTableDataChanged(_accountProvider.getAll());
 
         TableColumnAdjuster(frmMain.tableAccount);
     }
-
 
 }
