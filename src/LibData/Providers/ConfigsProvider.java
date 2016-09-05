@@ -20,48 +20,43 @@ import org.jinq.jpa.JinqJPAStreamProvider;
  * @author Limited
  */
 public class ConfigsProvider implements IProvider {
+
     private ConfigsJpaController jpaConfigs = new ConfigsJpaController(ProviderHelper.getEntityManagerFactory());
-    
-    private ConfigsJpaController getJPAConfigs()
-    {
+
+    private ConfigsJpaController getJPAConfigs() {
         RefreshDatabase(jpaConfigs.getEntityManager());
         return jpaConfigs;
     }
-    
-    private JPAJinqStream<Configs> getJinqConfigs()
-    {
+
+    private JPAJinqStream<Configs> getJinqConfigs() {
         return ProviderHelper.getJinqStream().streamAll(ProviderHelper.getEntityManager(), Configs.class);
     }
-    
-    public List<Configs> getAll()
-    {
+
+    public List<Configs> getAll() {
         try {
             return getJinqConfigs().sortedDescendingBy(m -> m.getCreateTime()).toList();
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public int count()
-    {
+
+    public int count() {
         try {
             return getAll().size();
         } catch (Exception e) {
             return -1;
         }
     }
-    
-    public Configs getByKey(String Key)
-    {
+
+    public Configs getByKey(String Key) {
         try {
             return jpaConfigs.findConfigs(Key);
         } catch (Exception e) {
             return null;
         }
     }
-    
-    public String getValueByKey(String Key)
-    {
+
+    public String getValueByKey(String Key) {
         try {
             return getByKey(Key).getValue();
         } catch (Exception e) {
@@ -69,15 +64,13 @@ public class ConfigsProvider implements IProvider {
         }
     }
 
-    public boolean IncreaseValueByKey(String key)
-    {
+    public boolean IncreaseValueByKey(String key) {
         try {
             Configs config = getByKey(key);
-            if (config == null)
-            {
+            if (config == null) {
                 Insert(createConfigs(key, "0"));
             }
-            
+
             long value = Long.parseLong(config.getValue()) + 1;
             config.setValue(value + "");
             Update(config);
@@ -86,7 +79,20 @@ public class ConfigsProvider implements IProvider {
             return false;
         }
     }
-    
+
+    public String getNewIdCode(String key) {
+        try {
+            if (!IncreaseValueByKey(key)) {
+                return "";
+            }
+
+            return key + "-" + String.format("%1$06d", Long.parseLong(getValueByKey(key)));
+        } catch (Exception ex) {
+//            showLog(ex);
+            return "";
+        }
+    }
+
     /**
      *
      * @param A Configs object was set key and value

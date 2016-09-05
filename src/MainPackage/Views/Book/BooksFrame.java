@@ -55,6 +55,8 @@ public class BooksFrame extends javax.swing.JFrame {
         _booksFrame = this;
         _booksFrame.setVisible(true);
 
+        _booksFrame.btnAdvanceSearch.setVisible(false);
+        
         _bookController.ShowBooksTable(_booksFrame);
 
         _booksFrame.booksTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -127,7 +129,7 @@ public class BooksFrame extends javax.swing.JFrame {
 
         jRadioButton1.setText("jRadioButton1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Danh sách Sách");
         setResizable(false);
 

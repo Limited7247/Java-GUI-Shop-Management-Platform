@@ -53,6 +53,8 @@ public class InventoryFrame extends javax.swing.JFrame {
 
         _inventoryFrame = this;
         _inventoryFrame.setVisible(true);
+        
+        _inventoryFrame.btnAdvanceSearch.setVisible(false);
 
         _inventoryController.ShowInventoryTable(_inventoryFrame);
         _inventoryFrame.inventoriesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

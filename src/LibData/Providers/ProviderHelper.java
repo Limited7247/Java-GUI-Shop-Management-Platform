@@ -18,6 +18,8 @@ import org.jinq.jpa.JinqJPAStreamProvider;
  */
 public class ProviderHelper {
 
+    
+    
     public static EntityManagerFactory getEntityManagerFactory() {
         return Persistence.createEntityManagerFactory("MVCDemoPU");
     }

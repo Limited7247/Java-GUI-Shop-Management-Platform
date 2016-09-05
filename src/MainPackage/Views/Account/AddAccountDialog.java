@@ -131,7 +131,13 @@ public class AddAccountDialog extends javax.swing.JDialog {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        AddAccountModel model = new AddAccountModel(txtUsername.getText(), _accountController.MD5(txtPassword.getText()), txtEmail.getText());
+        AddAccountModel model 
+                = new AddAccountModel(
+                        txtUsername.getText(), 
+                        _accountController.MD5(txtPassword.getText()), 
+                        txtEmail.getText()
+                );
+        
         if (_accountController.AddAccount(model)) {
             this.hide();
         }

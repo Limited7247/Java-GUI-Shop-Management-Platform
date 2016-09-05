@@ -7,9 +7,15 @@ package MainPackage.Views;
 
 import LibData.Models.Account;
 import LibData.Models.Factories.AccountFactory;
+import LibData.Models.OrderLine;
+import LibData.Models.Orders;
+import LibData.Providers.BookProvider;
 import MainPackage.Views.Book.BooksFrame;
 import MainPackage.Views.Inventory.InventoryFrame;
 import MainPackage.Views.Orders.NewOrderFrame;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.criteria.Order;
 import javax.swing.UIManager;
 
 /**
@@ -183,6 +189,43 @@ public class SecondMainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SecondMainFrame().setVisible(true);
+
+//                Account creator
+//                        = new BookProvider().getAll().get(0)    /// First Book in Database
+//                        .getProduct()                           /// Get Book's Product
+//                        .getCreatedBy();                        /// Get Book's Product's Creator Account
+//
+//                System.out.println(creator.getUsername());      /// Get Creator's Username
+//                
+//                /// Get First Order created by Creator
+//                Orders order 
+//                        = ((List<Orders>) creator.getOrdersCollection())
+//                        .get(0);
+//                
+//                /// Get Product's Name of the first order line of the order
+//                String ProductName
+//                        = ((ArrayList<OrderLine>) order.getOrderLineCollection())
+//                        .get(0)
+//                        .getProductId()
+//                        .getName();
+//                
+//                System.out.println(ProductName);
+//                
+//                String ProductName
+//                        = new BookProvider().getAll().get(0)
+//                        /// First Book in Database
+//                        .getProduct()
+//                        /// Get Book's Product
+//                        .getCreatedBy()
+//                        /// Get Book's Product's Creator Account
+//                        .getOrdersCollection()
+//                        /// Get First Order Created by that account
+//                        .getOrderLineCollection().stream().findFirst().get()
+//                        /// Get First Order's line of that order
+//                        .getProductId().getName();
+//                /// Get Product's Name in that order's line
+
+//                System.out.println(ProductName);
             }
         });
     }

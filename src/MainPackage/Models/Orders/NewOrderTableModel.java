@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MainPackage.Views.Orders;
+package MainPackage.Models.Orders;
 
 import LibData.Models.OrderLine;
 import LibData.Models.Product;
@@ -20,7 +20,7 @@ import static LimitedSolution.Utilities.CurrencyHelper.*;
  */
 public class NewOrderTableModel extends AbstractTableModel {
 
-    List<OrderLine> list;
+    public List<OrderLine> list;
 
     public NewOrderTableModel() {
         this.list = new ArrayList<OrderLine>();
@@ -140,6 +140,18 @@ public class NewOrderTableModel extends AbstractTableModel {
             }
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public void removeLine(OrderLine orderLine) {
+        if (contains(orderLine.getProductId().getIdCode()))
+        {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getProductId().getId().toUpperCase().equals(orderLine.getProductId().getId().toUpperCase()))
+                {
+                    list.remove(i);
+                }
+            }
         }
     }
 

@@ -90,6 +90,18 @@ public class InventoryProvider implements IProvider {
             return null;
         }
     }
+    
+    public Inventory getInitInventoryByProductId(String productId)
+    {
+        try {
+            return getJinqInventories()
+                    .where(m -> m.getType() == INVENTORY_TYPE_INIT && m.getProductId().getId().toUpperCase().equals(productId.toUpperCase()))
+                    .findOne().get();
+        } catch (Exception e) {
+            showLog(e);
+            return null;
+        }
+    }
 
     private String getNewIdCode() {
         try {

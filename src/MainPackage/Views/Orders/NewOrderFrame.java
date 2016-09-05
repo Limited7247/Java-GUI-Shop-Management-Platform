@@ -5,6 +5,7 @@
  */
 package MainPackage.Views.Orders;
 
+import MainPackage.Models.Orders.NewOrderTableModel;
 import LibData.Models.Account;
 import LibData.Models.Book;
 import LibData.Models.OrderLine;
@@ -14,6 +15,11 @@ import LimitedSolution.Utilities.JTableHelper;
 import MainPackage.Controllers.BookController;
 import MainPackage.Controllers.OrderController;
 import MainPackage.Models.Book.BookTableModel;
+import MainPackage.Models.Orders.NewOrderViewModel;
+import MainPackage.Views.Book.BooksFrame;
+import MainPackage.Views.Inventory.InventoryFrame;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
@@ -30,6 +36,12 @@ public class NewOrderFrame extends javax.swing.JFrame {
     private NewOrderFrame _newOrderFrame;
 
     private OrderController _orderController = new OrderController();
+    
+    private InventoryFrame _inventoryFrame;
+    
+    private BooksFrame _booksFrame;
+    
+//    private AccountFrame
 
     /**
      * Creates new form NewOrderFrame
@@ -44,6 +56,8 @@ public class NewOrderFrame extends javax.swing.JFrame {
 
         _newOrderFrame = this;
         _newOrderFrame.setVisible(true);
+
+        _newOrderFrame.btnAdvanceSearch.setVisible(false);
 
         _orderController.ShowBooksTable(_newOrderFrame);
 
@@ -131,7 +145,6 @@ public class NewOrderFrame extends javax.swing.JFrame {
         try {
             Integer totalPrice = getOrderLineTableModel().getTotalPrice();
             txtTotalPrice.setText(IntToVND(totalPrice));
-            txtVATPrice.setText(IntToVND(totalPrice / 10));
 
             Integer discountPrice = null;
             try {
@@ -141,9 +154,32 @@ public class NewOrderFrame extends javax.swing.JFrame {
                 discountPrice = 0;
             }
 
-            txtPaidPrice.setText(IntToVND(totalPrice - discountPrice));
+            Integer paidPrice = totalPrice - discountPrice;
+            txtPaidPrice.setText(IntToVND(paidPrice));
+            txtVATPrice.setText(IntToVND(paidPrice / 10));
+
         } catch (Exception e) {
         }
+    }
+
+    private void ClearOrderInformation() {
+        ClearBookInformation();
+        ClearOrderLineInformation();
+
+        getOrderLineTableModel().list.clear();
+        getOrderLineTableModel().fireTableDataChanged();
+
+        txtTotalPrice.setText("");
+        txtVATPrice.setText("");
+        txtDiscountPrice.setText("");
+        txtPaidPrice.setText("");
+
+        txtGuestName.setText("");
+        txtGuestAddress.setText("");
+        txtGuestEmail.setText("");
+        txtGuestPhone.setText("");
+
+        txtDetails.setText("");
     }
 
     /**
@@ -214,15 +250,26 @@ public class NewOrderFrame extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         txtOrderLineTotal = new javax.swing.JTextField();
         btnUpdateOrderLine = new javax.swing.JButton();
+        btnDeleteOrderLine = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Hóa đơn mới");
         setResizable(false);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Chi tiết Hóa đơn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Chi tiết Hóa đơn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(255, 0, 0))); // NOI18N
 
         btnMakeOrder.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnMakeOrder.setText("LẬP HÓA ĐƠN");
+        btnMakeOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMakeOrderActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Thông tin Hóa đơn"));
 
@@ -335,6 +382,7 @@ public class NewOrderFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setForeground(new java.awt.Color(255, 0, 0));
         jLabel10.setText("Tên khách");
 
         jLabel11.setText("Địa chỉ");
@@ -477,6 +525,7 @@ public class NewOrderFrame extends javax.swing.JFrame {
         });
 
         btnAdvanceSearch.setText("Tìm kiếm nâng cao");
+        btnAdvanceSearch.setEnabled(false);
 
         btnReloadBooksList.setText("Tải lại danh sách");
         btnReloadBooksList.addActionListener(new java.awt.event.ActionListener() {
@@ -565,7 +614,7 @@ public class NewOrderFrame extends javax.swing.JFrame {
                                 .addGap(44, 44, 44)
                                 .addComponent(txtProductQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel18)
@@ -638,7 +687,7 @@ public class NewOrderFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hóa đơn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hóa đơn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(255, 0, 0))); // NOI18N
 
         orderLinesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -689,6 +738,14 @@ public class NewOrderFrame extends javax.swing.JFrame {
             }
         });
 
+        btnDeleteOrderLine.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnDeleteOrderLine.setText("Xóa");
+        btnDeleteOrderLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteOrderLineActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -696,7 +753,6 @@ public class NewOrderFrame extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnUpdateOrderLine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel19)
                         .addGap(18, 18, 18)
@@ -712,7 +768,11 @@ public class NewOrderFrame extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel21)
                         .addGap(40, 40, 40)
-                        .addComponent(txtOrderLineQuantity, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)))
+                        .addComponent(txtOrderLineQuantity))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(btnDeleteOrderLine, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUpdateOrderLine, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -735,7 +795,9 @@ public class NewOrderFrame extends javax.swing.JFrame {
                     .addComponent(jLabel22)
                     .addComponent(txtOrderLineTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnUpdateOrderLine)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUpdateOrderLine)
+                    .addComponent(btnDeleteOrderLine))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -761,16 +823,68 @@ public class NewOrderFrame extends javax.swing.JFrame {
                         .addContainerGap())))
         );
 
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\books.png")); // NOI18N
+        jButton1.setToolTipText("Danh mục Sách");
+        jButton1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sách", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_BOTTOM, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
+        jButton2.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\inventory.png")); // NOI18N
+        jButton2.setToolTipText("Kiểm kê");
+        jButton2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kiểm kê", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_BOTTOM, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setBackground(new java.awt.Color(255, 255, 255));
+        jButton3.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\order.png")); // NOI18N
+        jButton3.setToolTipText("Hóa đơn");
+        jButton3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hóa đơn", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_BOTTOM, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+
+        jButton4.setBackground(new java.awt.Color(255, 255, 255));
+        jButton4.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\Accounts.png")); // NOI18N
+        jButton4.setToolTipText("Tài khoản");
+        jButton4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tài khoản", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_BOTTOM, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setBackground(new java.awt.Color(255, 255, 255));
+        jButton5.setIcon(new javax.swing.ImageIcon("C:\\Users\\Limited\\Documents\\GitHub\\MVCJava\\resources\\images\\exit.png")); // NOI18N
+        jButton5.setToolTipText("Thoát");
+        jButton5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thoát", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BELOW_BOTTOM, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -778,12 +892,23 @@ public class NewOrderFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
@@ -822,7 +947,6 @@ public class NewOrderFrame extends javax.swing.JFrame {
     private void btnAddOrderLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderLineActionPerformed
         // TODO add your handling code here:
         _orderController.AddOrderLineToTable(this, getSelectedBook().getProduct(), txtProductQuantity.getValue().toString());
-        JTableHelper.TableColumnAdjuster(_newOrderFrame.orderLinesTable);
         LoadOrderInformation();
     }//GEN-LAST:event_btnAddOrderLineActionPerformed
 
@@ -864,21 +988,108 @@ public class NewOrderFrame extends javax.swing.JFrame {
 
     private void txtOrderLineQuantityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtOrderLineQuantityStateChanged
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_txtOrderLineQuantityStateChanged
 
     private void btnUpdateOrderLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateOrderLineActionPerformed
         // TODO add your handling code here:
-        
+        try {
+            _orderController.UpdateOrderLineToOrderLinesTable(
+                    this,
+                    getSelectedOrderLine(),
+                    txtOrderLineQuantity.getValue().toString()
+            );
+            LoadOrderInformation();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn một chi tiết",
+                    "Cập nhật hóa đơn",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
     }//GEN-LAST:event_btnUpdateOrderLineActionPerformed
+
+    private void btnDeleteOrderLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteOrderLineActionPerformed
+        // TODO add your handling code here:
+        try {
+            _orderController.DeleteOrderLineFromOrderLinesTable(
+                    this,
+                    getSelectedOrderLine()
+            );
+            LoadOrderInformation();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn một chi tiết",
+                    "Cập nhật hóa đơn",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+
+    }//GEN-LAST:event_btnDeleteOrderLineActionPerformed
+
+    private void btnMakeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMakeOrderActionPerformed
+        // TODO add your handling code here:
+        NewOrderViewModel model
+                = new NewOrderViewModel(
+                        getOrderLineTableModel().list,
+                        txtTotalPrice.getText(),
+                        txtVATPrice.getText(),
+                        txtDiscountPrice.getText(),
+                        txtPaidPrice.getText(),
+                        txtGuestName.getText(),
+                        txtGuestAddress.getText(),
+                        txtGuestPhone.getText(),
+                        txtGuestEmail.getText(),
+                        txtDetails.getText()
+                );
+
+        if (_orderController.MakeOrder(this, model, _account)) {
+            ClearOrderInformation();
+            _orderController.ShowBooksTable(this);
+        }
+    }//GEN-LAST:event_btnMakeOrderActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        if (_inventoryFrame == null)
+        {
+            _inventoryFrame = new InventoryFrame(_account);
+        }
+        
+        _inventoryFrame.show();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if (_booksFrame == null)
+        {
+            _booksFrame = new BooksFrame(_account);
+        }
+        
+        _booksFrame.show();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void DiscountPriceValueChanged() {
         Integer discountPrice = null;
         try {
             discountPrice = Integer.parseInt(VNDToInt(txtDiscountPrice.getText()) + "");
-            Integer totalPrice = getOrderLineTableModel().getTotalPrice();
-            txtPaidPrice.setText(IntToVND(totalPrice - discountPrice));
+//            Integer totalPrice = getOrderLineTableModel().getTotalPrice();
+//            txtPaidPrice.setText(IntToVND(totalPrice - discountPrice));
             txtDiscountWarning.setText("");
+
+            LoadOrderInformation();
         } catch (Exception e) {
             txtDiscountWarning.setText("Tiền khuyến mại không đúng định dạng.");
         }
@@ -925,10 +1136,16 @@ public class NewOrderFrame extends javax.swing.JFrame {
     public javax.swing.JTable booksTable;
     private javax.swing.JButton btnAddOrderLine;
     private javax.swing.JButton btnAdvanceSearch;
+    private javax.swing.JButton btnDeleteOrderLine;
     private javax.swing.JButton btnMakeOrder;
     private javax.swing.JButton btnReloadBooksList;
     private javax.swing.JButton btnSimplySearch;
     private javax.swing.JButton btnUpdateOrderLine;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -963,23 +1180,23 @@ public class NewOrderFrame extends javax.swing.JFrame {
     public javax.swing.JTable orderLinesTable;
     private static javax.swing.JTextField txOrderLinetIdCode;
     private javax.swing.JTextField txtBookSearch;
-    private static javax.swing.JTextArea txtDetails;
-    private static javax.swing.JTextField txtDiscountPrice;
+    public static javax.swing.JTextArea txtDetails;
+    public static javax.swing.JTextField txtDiscountPrice;
     private javax.swing.JLabel txtDiscountWarning;
-    private static javax.swing.JTextField txtGuestAddress;
-    private static javax.swing.JTextField txtGuestEmail;
-    private static javax.swing.JTextField txtGuestName;
-    private static javax.swing.JTextField txtGuestPhone;
+    public static javax.swing.JTextField txtGuestAddress;
+    public static javax.swing.JTextField txtGuestEmail;
+    public static javax.swing.JTextField txtGuestName;
+    public static javax.swing.JTextField txtGuestPhone;
     private static javax.swing.JTextField txtIdCode;
     private static javax.swing.JTextField txtOrderLinePrice;
     private javax.swing.JSpinner txtOrderLineQuantity;
     private static javax.swing.JTextField txtOrderLineTotal;
-    private static javax.swing.JTextField txtPaidPrice;
+    public static javax.swing.JTextField txtPaidPrice;
     private static javax.swing.JTextField txtProductName;
     private static javax.swing.JTextField txtProductPrice;
     private javax.swing.JSpinner txtProductQuantity;
     private static javax.swing.JTextField txtProductTotalPrice;
-    private static javax.swing.JTextField txtTotalPrice;
-    private static javax.swing.JTextField txtVATPrice;
+    public static javax.swing.JTextField txtTotalPrice;
+    public static javax.swing.JTextField txtVATPrice;
     // End of variables declaration//GEN-END:variables
 }
