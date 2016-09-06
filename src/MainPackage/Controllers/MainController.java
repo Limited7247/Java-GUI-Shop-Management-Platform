@@ -5,15 +5,25 @@
  */
 package MainPackage.Controllers;
 
+import LibData.Models.Account;
+import LibData.Models.Product;
 import LibData.Providers.AccountProvider;
+import LimitedSolution.Utilities.DateTimeHelper;
+import static LimitedSolution.Utilities.JTableHelper.TableColumnAdjuster;
 import MainPackage.Models.Account.AccountTableModel;
-import MainPackage.Views.MainFrame;
+import MainPackage.Views.Book.BooksFrame;
+import MainPackage.Views.Account.AccountsFrame;
 import java.awt.Component;
 import static java.lang.System.exit;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import static LimitedSolution.Utilities.JTableHelper.TableColumnAdjuster;
 
 /**
  *
@@ -22,6 +32,33 @@ import javax.swing.table.TableColumn;
 public class MainController {
 
     private AccountProvider _accountProvider = new AccountProvider();
+
+    public void Start() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BooksFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+//        System.out.println(DateTimeHelper.getCurrentDateString());
+//        System.out.println(DateTimeHelper.getCurrentTimeString());
+//        System.out.println(DateTimeHelper.getCurrentDateTimeString());
+//        
+//        System.out.println(DateTimeHelper.getDateString(new Date()));
+//        System.out.println(DateTimeHelper.getTimeString(new Date()));
+//        System.out.println(DateTimeHelper.getDateTimeString(new Date()));
+//        
+//        System.out.println(DateTimeHelper.getDateTimeString(new Date(), DateTimeHelper.FORMAT_DATE_DEFAULT));
+//        System.out.println(DateTimeHelper.getDateTimeString(new Date(), DateTimeHelper.FORMAT_TIME_DEFAULT));
+//        System.out.println(DateTimeHelper.getDateTimeString(new Date(), DateTimeHelper.FORMAT_DATETIME_DEFAULT));
+
+    }
 
     public void Exit() {
         if (JOptionPane.showConfirmDialog(
@@ -34,34 +71,16 @@ public class MainController {
         }
     }
 
-    public void ShowAccountTable(MainFrame frmMain) {
+    public void ShowAccountTable(AccountsFrame frmMain) {
         frmMain.tableAccount.setModel(new AccountTableModel(_accountProvider.getAll()));
-       
+
         TableColumnAdjuster(frmMain.tableAccount);
     }
 
-    public void TableColumnAdjuster(JTable table) {
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    public void UpdateAccountTable(AccountsFrame frmMain) {
+        ((AccountTableModel) frmMain.tableAccount.getModel()).fireTableDataChanged(_accountProvider.getAll());
 
-        for (int column = 0; column < table.getColumnCount(); column++) {
-            TableColumn tableColumn = table.getColumnModel().getColumn(column);
-            int preferredWidth = tableColumn.getMinWidth();
-            int maxWidth = tableColumn.getMaxWidth();
-
-            for (int row = 0; row < table.getRowCount(); row++) {
-                TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
-                Component c = table.prepareRenderer(cellRenderer, row, column);
-                int width = c.getPreferredSize().width + table.getIntercellSpacing().width;
-                preferredWidth = Math.max(preferredWidth, width);
-
-                //  We've exceeded the maximum width, no need to check other rows
-                if (preferredWidth >= maxWidth) {
-                    preferredWidth = maxWidth;
-                    break;
-                }
-            }
-
-            tableColumn.setPreferredWidth(preferredWidth);
-        }
+        TableColumnAdjuster(frmMain.tableAccount);
     }
+
 }
