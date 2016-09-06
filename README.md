@@ -16,3 +16,6 @@ http://www.jinq.org/index.html
 https://github.com/Limited7247/Limited-Solutions-for-Java
 ### 5. Apache POI: 3.15-beta2
 https://poi.apache.org/
+
+## Preview:
+![alt tag](https://github.com/Limited7247/Java-GUI-Shop-Management-Platform/raw/master/preview.jpg)
